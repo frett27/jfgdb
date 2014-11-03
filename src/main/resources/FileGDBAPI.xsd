@@ -1,0 +1,1506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://www.esri.com/schemas/ArcGIS/10.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.esri.com/schemas/ArcGIS/10.1">
+	<xs:element name="Domain" type="Domain"/>
+	<xs:element name="Subtype" type="Subtype"/>
+	<xs:element name="Field" type="Field"/>
+	<xs:element name="Index" type="Index"/>
+	<xs:element name="DataElement" type="DEDataset"/>
+	<xs:simpleType name="esriFieldType">
+		<xs:annotation>
+			<xs:documentation>Field Types.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="esriFieldTypeInteger">
+				<xs:annotation>
+					<xs:documentation>Long Integer.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFieldTypeSmallInteger">
+				<xs:annotation>
+					<xs:documentation>Integer.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFieldTypeDouble">
+				<xs:annotation>
+					<xs:documentation>Double-precision floating-point number.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFieldTypeSingle">
+				<xs:annotation>
+					<xs:documentation>Single-precision floating-point number.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFieldTypeString">
+				<xs:annotation>
+					<xs:documentation>Character string.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFieldTypeDate">
+				<xs:annotation>
+					<xs:documentation>Date.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFieldTypeGeometry">
+				<xs:annotation>
+					<xs:documentation>Geometry.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFieldTypeOID">
+				<xs:annotation>
+					<xs:documentation>Long Integer representing an object identifier.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFieldTypeBlob">
+				<xs:annotation>
+					<xs:documentation>Binary Large Object.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFieldTypeGlobalID">
+				<xs:annotation>
+					<xs:documentation>ESRI Global ID.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFieldTypeRaster">
+				<xs:annotation>
+					<xs:documentation>Raster.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFieldTypeGUID">
+				<xs:annotation>
+					<xs:documentation>Globally Unique Identifier.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFieldTypeXML">
+				<xs:annotation>
+					<xs:documentation>XML Document</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="esriMergePolicyType">
+		<xs:annotation>
+			<xs:documentation>Merge policy types.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="esriMPTSumValues">
+				<xs:annotation>
+					<xs:documentation>Sum the values merge policy.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriMPTAreaWeighted">
+				<xs:annotation>
+					<xs:documentation>Area weighted merge policy.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriMPTDefaultValue">
+				<xs:annotation>
+					<xs:documentation>Default value merge policy.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="esriSplitPolicyType">
+		<xs:annotation>
+			<xs:documentation>Split policy types.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="esriSPTGeometryRatio">
+				<xs:annotation>
+					<xs:documentation>Geometry-ratioed split policy.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriSPTDuplicate">
+				<xs:annotation>
+					<xs:documentation>Duplicate split policy.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriSPTDefaultValue">
+				<xs:annotation>
+					<xs:documentation>Default value split policy.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Domain" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+        Domain Properties control and their merge split policies control.
+      </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="DomainName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>
+            The ID of the domain.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FieldType" type="esriFieldType">
+				<xs:annotation>
+					<xs:documentation>The field type of the field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MergePolicy" type="esriMergePolicyType">
+				<xs:annotation>
+					<xs:documentation>The merge policy.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SplitPolicy" type="esriSplitPolicyType">
+				<xs:annotation>
+					<xs:documentation>The split policy.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The description of the domain.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Owner" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The owner of the domain.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RangeDomain" mixed="false">
+		<xs:annotation>
+			<xs:documentation>ESRI Range Domain object.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Domain">
+				<xs:sequence>
+					<xs:element name="MaxValue" type="xs:anyType">
+						<xs:annotation>
+							<xs:documentation>The maximum value for the associated attribute.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MinValue" type="xs:anyType">
+						<xs:annotation>
+							<xs:documentation>The minimum value for the associated attribute.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CodedValue">
+		<xs:annotation>
+			<xs:documentation>
+        ESRI Attribute set constraint object.
+      </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string"/>
+			<xs:element name="Code" type="xs:anyType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfCodedValue">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CodedValue" type="CodedValue" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CodedValueDomain" mixed="false">
+		<xs:annotation>
+			<xs:documentation>ESRI Attribute set constraint object.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Domain">
+				<xs:sequence>
+					<xs:element name="CodedValues" type="ArrayOfCodedValue"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Subtype">
+		<xs:annotation>
+			<xs:documentation>The (GP) Subtype Object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SubtypeName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The name of the subtype.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SubtypeCode" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>The code of the subtype.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FieldInfos" type="ArrayOfSubtypeFieldInfo"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SubtypeFieldInfo">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="FieldName" type="xs:string"/>
+			<xs:element name="DomainName" type="xs:string" minOccurs="0"/>
+			<xs:element name="DefaultValue" type="xs:anyType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfSubtypeFieldInfo">
+		<xs:annotation>
+			<xs:documentation>Generic array of objects.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SubtypeFieldInfo" type="SubtypeFieldInfo" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfSubtype">
+		<xs:annotation>
+			<xs:documentation>Generic array of objects.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Subtype" type="Subtype" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="esriGeometryType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="esriGeometryPoint"/>
+			<xs:enumeration value="esriGeometryMultipoint"/>
+			<xs:enumeration value="esriGeometryPolyline"/>
+			<xs:enumeration value="esriGeometryPolygon"/>
+			<xs:enumeration value="esriGeometryMultiPatch"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Field">
+		<xs:annotation>
+			<xs:documentation>ESRI Field Object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The name of the field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Type" type="esriFieldType">
+				<xs:annotation>
+					<xs:documentation>The type of the field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IsNullable" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>Indicates if the field can contain null values.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Length" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>The maximum length, in bytes, for values described by the field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Precision" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>The precision for field values.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Scale" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>The scale for field values.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Required" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indicates if the field is required.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Editable" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indicates if the field is editable.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DomainFixed" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indicates if the field's domain is fixed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GeometryDef" type="GeometryDef" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The geometry definition for the field if IsGeometry is TRUE.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AliasName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The alias name of the field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ModelName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The model name of the field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DefaultValue" type="xs:anyType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The default value of the field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Domain" type="Domain" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The default domain of the field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RasterDef" type="RasterDef" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The raster column definition.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RasterDef">
+		<xs:annotation>
+			<xs:documentation>Raster Column Definition Class.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The raster column description.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IsByRef" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+            Indicates if the Raster column value is to be managed by GeoDatabase.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SpatialReference" type="SpatialReference" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The SpatialReference of the raster.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IsByFunction" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+            Indicates if the Raster column value is of type function raster dataset.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GeometryDef">
+		<xs:annotation>
+			<xs:documentation>ESRI Geometry Definition Object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AvgNumPoints" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>Estimated average number of points per feature.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GeometryType" type="esriGeometryType">
+				<xs:annotation>
+					<xs:documentation>The enumerated geometry type.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HasM" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>Indicates if the feature class has measure (M) values.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HasZ" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>Indicates if the featureClass has Z values.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SpatialReference" type="SpatialReference">
+				<xs:annotation>
+					<xs:documentation>The spatial reference for the dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GridSize0" type="xs:double" minOccurs="0"/>
+			<xs:element name="GridSize1" type="xs:double" minOccurs="0"/>
+			<xs:element name="GridSize2" type="xs:double" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SpatialReference" abstract="true">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="WKT" type="xs:string" minOccurs="0"/>
+			<xs:element name="XOrigin" type="xs:double" minOccurs="0"/>
+			<xs:element name="YOrigin" type="xs:double" minOccurs="0"/>
+			<xs:element name="XYScale" type="xs:double" minOccurs="0"/>
+			<xs:element name="ZOrigin" type="xs:double" minOccurs="0"/>
+			<xs:element name="ZScale" type="xs:double" minOccurs="0"/>
+			<xs:element name="MOrigin" type="xs:double" minOccurs="0"/>
+			<xs:element name="MScale" type="xs:double" minOccurs="0"/>
+			<xs:element name="XYTolerance" type="xs:double" minOccurs="0"/>
+			<xs:element name="ZTolerance" type="xs:double" minOccurs="0"/>
+			<xs:element name="MTolerance" type="xs:double" minOccurs="0"/>
+			<xs:element name="HighPrecision" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="LeftLongitude" type="xs:double" minOccurs="0"/>
+			<xs:element name="WKID" type="xs:int" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ProjectedCoordinateSystem" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="SpatialReference"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="GeographicCoordinateSystem" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="SpatialReference"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="UnknownCoordinateSystem" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="SpatialReference"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfField">
+		<xs:annotation>
+			<xs:documentation>ESRI FieldArray object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Field" type="Field" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Fields">
+		<xs:annotation>
+			<xs:documentation>ESRI Fields Object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="FieldArray" type="ArrayOfField"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Index">
+		<xs:annotation>
+			<xs:documentation>ESRI Index Object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The name of the index.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IsUnique" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>Indicates if the index is unique.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IsAscending" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>Indicates if the index is based on ascending order.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Fields" type="Fields">
+				<xs:annotation>
+					<xs:documentation>The fields collection for this index.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Indexes">
+		<xs:annotation>
+			<xs:documentation>ESRI Indices Object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="IndexArray" type="ArrayOfIndex"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfIndex">
+		<xs:annotation>
+			<xs:documentation>Generic array of objects.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Index" type="Index" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="esriNetworkClassAncillaryRole">
+		<xs:annotation>
+			<xs:documentation>Network ancillary role types.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="esriNCARNone">
+				<xs:annotation>
+					<xs:documentation>No ancillary role.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriNCARSourceSink">
+				<xs:annotation>
+					<xs:documentation>Source Sink ancillary role.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ArrayOfControllerMembership">
+		<xs:annotation>
+			<xs:documentation>Generic array of objects.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ControllerMembership" type="ControllerMembership" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ControllerMembership" abstract="true">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="GeometricNetworkMembership" mixed="false">
+		<xs:annotation>
+			<xs:documentation>The Geometric Network Membership object.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="ControllerMembership">
+				<xs:sequence>
+					<xs:element name="GeometricNetworkName" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>The name of the Geometric Network this feature participates in.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EnabledFieldName" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>The enabled field.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AncillaryRoleFieldName" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The ancillary role field.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="NetworkClassAncillaryRole" type="esriNetworkClassAncillaryRole" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TopologyMembership" mixed="false">
+		<xs:annotation>
+			<xs:documentation>The Topology Membership object.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="ControllerMembership">
+				<xs:sequence>
+					<xs:element name="TopologyName" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>The name of the Topology this feature class participates in.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Weight" type="xs:double">
+						<xs:annotation>
+							<xs:documentation>The weight of the feature class in the topology.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="XYRank" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>The XYRank of the feature class in the topology.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ZRank" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>The ZRank of the feature class in the topology.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EventNotificationOnValidate" type="xs:boolean">
+						<xs:annotation>
+							<xs:documentation>Indicates if event notification is fired on validate.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="esriDatasetType">
+		<xs:annotation>
+			<xs:documentation>Dataset Types.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="esriDTAny">
+				<xs:annotation>
+					<xs:documentation>Any Dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTContainer">
+				<xs:annotation>
+					<xs:documentation>Any Container Dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTGeo">
+				<xs:annotation>
+					<xs:documentation>Any Geo Dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTFeatureDataset">
+				<xs:annotation>
+					<xs:documentation>Feature Dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTFeatureClass">
+				<xs:annotation>
+					<xs:documentation>Feature Class.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTPlanarGraph">
+				<xs:annotation>
+					<xs:documentation>Planar Graph.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTGeometricNetwork">
+				<xs:annotation>
+					<xs:documentation>Geometric Network.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTText">
+				<xs:annotation>
+					<xs:documentation>Text Dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTTable">
+				<xs:annotation>
+					<xs:documentation>Table Dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTRelationshipClass">
+				<xs:annotation>
+					<xs:documentation>Relationship Class.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTRasterDataset">
+				<xs:annotation>
+					<xs:documentation>Raster Dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTRasterBand">
+				<xs:annotation>
+					<xs:documentation>Raster Band.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTTin">
+				<xs:annotation>
+					<xs:documentation>Tin Dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTCadDrawing">
+				<xs:annotation>
+					<xs:documentation>CadDrawing Dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTRasterCatalog">
+				<xs:annotation>
+					<xs:documentation>Raster Catalog.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTTopology">
+				<xs:annotation>
+					<xs:documentation>Topology.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTToolbox">
+				<xs:annotation>
+					<xs:documentation>Toolbox.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTTool">
+				<xs:annotation>
+					<xs:documentation>Tool.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTNetworkDataset">
+				<xs:annotation>
+					<xs:documentation>Network Dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTTerrain">
+				<xs:annotation>
+					<xs:documentation>Terrain dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTRepresentationClass">
+				<xs:annotation>
+					<xs:documentation>Feature Class Representation.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTCadastralFabric">
+				<xs:annotation>
+					<xs:documentation>Cadastral Fabric.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTSchematicDataset">
+				<xs:annotation>
+					<xs:documentation>Schematic Dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriDTLocator">
+				<xs:annotation>
+					<xs:documentation>Address Locator.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="DEDataset" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="DataElement">
+				<xs:sequence>
+					<xs:element name="DatasetType" type="esriDatasetType">
+						<xs:annotation>
+							<xs:documentation>Dataset type.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DSID" type="xs:int" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The id of the dataset.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Versioned" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Indicates if this dataset is versioned.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CanVersion" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Indicates if this dataset can be versioned.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ConfigurationKeyword" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DataElement" abstract="true">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CatalogPath" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The string used to retrieve the element.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The user assigned name for the element.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ChildrenExpanded" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indicates if the children have been expanded.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FullPropsRetrieved" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indicates if full properties have been retrieved.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MetadataRetrieved" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indicates if the metadata has been retrieved.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Metadata" type="XmlPropertySet" nillable="true" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The PropertySet containing metadata.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Children" type="ArrayOfDataElement" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The list of sub-elements.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfDataElement">
+		<xs:annotation>
+			<xs:documentation>Generic array of objects.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="DataElement" type="DataElement" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="XmlPropertySet">
+		<xs:annotation>
+			<xs:documentation>ESRI XML PropertySet object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="XmlDoc" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DETable" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Table Data Element object.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="DEDataset">
+				<xs:sequence>
+					<xs:element name="HasOID" type="xs:boolean">
+						<xs:annotation>
+							<xs:documentation>Indicates if the table has an object id field.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OIDFieldName" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The name of the OID Field.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Fields" type="Fields">
+						<xs:annotation>
+							<xs:documentation>The list of Fields.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Indexes" type="Indexes">
+						<xs:annotation>
+							<xs:documentation>The list of Indexes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CLSID" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The GUID for the COM Class (Object) corresponding to instances of the object class represented by the table data element.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EXTCLSID" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The GUID for the COM Class (Object) corresponding to the class extension of the object class represented by the table data element.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="RelationshipClassNames" type="Names" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The names of the Relationship Classes this object class participates in.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AliasName" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The alias name for the table.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ModelName" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The model name for the table.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="HasGlobalID" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Indicates if the table has a GlobalID field.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="GlobalIDFieldName" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The name of the GlobalID Field.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="RasterFieldName" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The name of the raster field.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ExtensionProperties" type="PropertySet" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The properties for the class extension.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SubtypeFieldName" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The name of the Subtype Field.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DefaultSubtypeCode" type="xs:int" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The default subtype code.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Subtypes" type="ArrayOfSubtype" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The set of Subtypes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ControllerMemberships" type="ArrayOfControllerMembership" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The set of controller memberships for the table.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Names">
+		<xs:annotation>
+			<xs:documentation>An object to hold a collection of names.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PropertySetProperty">
+		<xs:sequence>
+			<xs:element name="Key" type="xs:string"/>
+			<xs:element name="Value" type="xs:anyType" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfPropertySetProperty">
+		<xs:sequence>
+			<xs:element name="PropertySetProperty" type="PropertySetProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PropertySet">
+		<xs:sequence>
+			<xs:element name="PropertyArray" type="ArrayOfPropertySetProperty"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="esriFeatureType">
+		<xs:annotation>
+			<xs:documentation>Feature Types.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="esriFTSimple">
+				<xs:annotation>
+					<xs:documentation>Simple Feature.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFTSimpleJunction">
+				<xs:annotation>
+					<xs:documentation>Simple Junction Feature.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFTSimpleEdge">
+				<xs:annotation>
+					<xs:documentation>Simple Edge Feature.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFTComplexJunction">
+				<xs:annotation>
+					<xs:documentation>Complex Junction Feature.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFTComplexEdge">
+				<xs:annotation>
+					<xs:documentation>Complex Edge Feature.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFTAnnotation">
+				<xs:annotation>
+					<xs:documentation>Annotation Feature.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFTCoverageAnnotation">
+				<xs:annotation>
+					<xs:documentation>Coverage Annotation Feature.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="esriFTDimension">
+				<xs:annotation>
+					<xs:documentation>Dimension Feature.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="DEFeatureClass" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Feature Class Data Element object.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="DETable">
+				<xs:sequence>
+					<xs:element name="FeatureType" type="esriFeatureType">
+						<xs:annotation>
+							<xs:documentation>The feature type of the feature class.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ShapeType" type="esriGeometryType">
+						<xs:annotation>
+							<xs:documentation>The geometry type of the feature class.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ShapeFieldName" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>The shape field name of the feature class.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="HasM" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Indicates if the feature class supports Ms.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="HasZ" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Indicates if the feature class supports Zs.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="HasSpatialIndex" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Indicates if the feature class has a spatial index.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AreaFieldName" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The geometry area field.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="LengthFieldName" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The geometry length field.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Extent" type="Envelope" nillable="true">
+						<xs:annotation>
+							<xs:documentation>The extent of the coverage.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SpatialReference" type="SpatialReference" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The spatial reference of the geodataset.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Envelope" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Geometry"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Geometry">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="Curve" abstract="true" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Geometry"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Segment" abstract="true" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Curve">
+				<xs:sequence>
+					<xs:element name="FromPoint" type="Point"/>
+					<xs:element name="ToPoint" type="Point"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Polycurve" abstract="true" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Curve"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EnvelopeN" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Envelope">
+				<xs:sequence>
+					<xs:element name="XMin" type="xs:double"/>
+					<xs:element name="YMin" type="xs:double"/>
+					<xs:element name="XMax" type="xs:double"/>
+					<xs:element name="YMax" type="xs:double"/>
+					<xs:element name="ZMin" type="xs:double" minOccurs="0"/>
+					<xs:element name="ZMax" type="xs:double" minOccurs="0"/>
+					<xs:element name="MMin" type="xs:double" minOccurs="0"/>
+					<xs:element name="MMax" type="xs:double" minOccurs="0"/>
+					<xs:element name="SpatialReference" type="SpatialReference" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EnvelopeB" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Envelope">
+				<xs:sequence>
+					<xs:element name="Bytes" type="xs:base64Binary"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Point" abstract="true" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Geometry"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PointN" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Point">
+				<xs:sequence>
+					<xs:element name="X" type="xs:double"/>
+					<xs:element name="Y" type="xs:double"/>
+					<xs:element name="M" type="xs:double" minOccurs="0"/>
+					<xs:element name="Z" type="xs:double" minOccurs="0"/>
+					<xs:element name="ID" type="xs:int" minOccurs="0"/>
+					<xs:element name="SpatialReference" type="SpatialReference" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PointB" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Point">
+				<xs:sequence>
+					<xs:element name="Bytes" type="xs:base64Binary"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Multipoint" abstract="true" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Geometry"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MultipointB" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Multipoint">
+				<xs:sequence>
+					<xs:element name="Bytes" type="xs:base64Binary"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MultipointN" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Multipoint">
+				<xs:sequence>
+					<xs:element name="HasID" type="xs:boolean"/>
+					<xs:element name="HasZ" type="xs:boolean"/>
+					<xs:element name="HasM" type="xs:boolean"/>
+					<xs:element name="Extent" type="Envelope" minOccurs="0"/>
+					<xs:element name="PointArray" type="ArrayOfPoint" minOccurs="0"/>
+					<xs:element name="SpatialReference" type="SpatialReference" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Line" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Segment"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EllipticArc" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Segment">
+				<xs:sequence>
+					<xs:element name="EllipseStd" type="xs:boolean"/>
+					<xs:element name="CenterPoint" type="Point"/>
+					<xs:element name="Rotation" type="xs:double"/>
+					<xs:element name="MinorMajorRatio" type="xs:double"/>
+					<xs:element name="IsCounterClockwise" type="xs:boolean"/>
+					<xs:element name="IsMinor" type="xs:boolean"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CircularArc" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Segment">
+				<xs:sequence>
+					<xs:element name="CenterPoint" type="Point"/>
+					<xs:element name="FromAngle" type="xs:double" minOccurs="0"/>
+					<xs:element name="ToAngle" type="xs:double" minOccurs="0"/>
+					<xs:element name="IsCounterClockwise" type="xs:boolean"/>
+					<xs:element name="IsMinor" type="xs:boolean"/>
+					<xs:element name="IsLine" type="xs:boolean"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="BezierCurve" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Segment">
+				<xs:sequence>
+					<xs:element name="Degree" type="xs:int"/>
+					<xs:element name="ControlPointArray" type="ArrayOfPoint"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Path" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Curve">
+				<xs:sequence>
+					<xs:element name="PointArray" type="ArrayOfPoint" minOccurs="0"/>
+					<xs:element name="SegmentArray" type="ArrayOfSegment" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Ring" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Path"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Polygon" abstract="true" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Polycurve"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PolygonN" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Polygon">
+				<xs:sequence>
+					<xs:element name="HasID" type="xs:boolean"/>
+					<xs:element name="HasZ" type="xs:boolean"/>
+					<xs:element name="HasM" type="xs:boolean"/>
+					<xs:element name="Extent" type="Envelope" minOccurs="0"/>
+					<xs:element name="RingArray" type="ArrayOfRing"/>
+					<xs:element name="SpatialReference" type="SpatialReference" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PolygonB" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Polygon">
+				<xs:sequence>
+					<xs:element name="Bytes" type="xs:base64Binary"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Polyline" abstract="true" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Polycurve"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PolylineN" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Polyline">
+				<xs:sequence>
+					<xs:element name="HasID" type="xs:boolean"/>
+					<xs:element name="HasZ" type="xs:boolean"/>
+					<xs:element name="HasM" type="xs:boolean"/>
+					<xs:element name="Extent" type="Envelope" minOccurs="0"/>
+					<xs:element name="PathArray" type="ArrayOfPath"/>
+					<xs:element name="SpatialReference" type="SpatialReference" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PolylineB" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Polyline">
+				<xs:sequence>
+					<xs:element name="Bytes" type="xs:base64Binary"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfPoint">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Point" type="Point" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfPath">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Path" type="Path" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfRing">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Ring" type="Ring" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfSegment">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Segment" type="Segment" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfPolyline">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Polyline" type="Polyline" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfPolygon">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Polygon" type="Polygon" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MultiPatch" abstract="true" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Geometry"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MultiPatchB" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="MultiPatch">
+				<xs:sequence>
+					<xs:element name="Bytes" type="xs:base64Binary"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MultiPatchN" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="MultiPatch">
+				<xs:sequence>
+					<xs:element name="HasID" type="xs:boolean"/>
+					<xs:element name="HasZ" type="xs:boolean"/>
+					<xs:element name="HasM" type="xs:boolean"/>
+					<xs:element name="Extent" type="Envelope"/>
+					<xs:element name="SurfacePatchArray" type="ArrayOfSurfacePatch"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfSurfacePatch">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SurfacePatch" type="Geometry" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TriangleFan" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Geometry">
+				<xs:sequence>
+					<xs:element name="PointArray" type="ArrayOfPoint" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TriangleStrip" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="Geometry">
+				<xs:sequence>
+					<xs:element name="PointArray" type="ArrayOfPoint" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DEFeatureDataset" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Feature Dataset Data Element object.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="DEGeoDataset"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DEGeoDataset" mixed="false">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="DEDataset">
+				<xs:sequence>
+					<xs:element name="Extent" type="Envelope" nillable="true">
+						<xs:annotation>
+							<xs:documentation>The extent of the coverage.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SpatialReference" type="SpatialReference">
+						<xs:annotation>
+							<xs:documentation>The spatial reference of the geodataset.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

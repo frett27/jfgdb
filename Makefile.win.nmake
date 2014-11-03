@@ -1,0 +1,72 @@
+ESRI_FILE_GBD_HOME=C:\Projets\fgdbjava\FileGDB_API_VS2012_1_3
+ESRI_FILE_GBD_INCLUDE=$(ESRI_FILE_GBD_HOME)\include
+TOOLS=$(VCINSTALLDIR)
+WIN_SDK=$(WindowsSdkDir)
+JAVA_HOME=C:\Java\jdk1.7.0_01
+
+# WINLIBS=kernel32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib
+WINLIBS=kernel32.lib advapi32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib oleaut32.lib
+
+!IFNDEF ARCH
+ARCH=x86
+!ENDIF
+
+!IF "$(ARCH)" == "x86"
+MACHINE=IX86
+INCLUDE="-I$(TOOLS)\include"
+CFLAGS=/c /nologo /EHsc
+CC="$(TOOLS)\bin\cl.exe"
+LINK="$(TOOLS)\bin\link.exe"
+LDIR="/LIBPATH:$(TOOLS)\lib" "/LIBPATH:$(WIN_SDK)\lib" "/LIBPATH:$(ESRI_FILE_GBD_HOME)\lib"
+!ENDIF
+
+!IF "$(ARCH)" == "x86_64"
+MACHINE=x64
+INCLUDE="-I$(TOOLS)\include"
+CFLAGS=/c /nologo /EHsc /Fo64
+CC="$(TOOLS)\bin\x86_amd64\cl.exe"
+LINK="$(TOOLS)\bin\x86_amd64\link.exe"
+LDIR="/LIBPATH:$(TOOLS)\lib\amd64" "/LIBPATH:$(WIN_SDK)\lib\x64" "/LIBPATH:$(ESRI_FILE_GBD_HOME)\lib64"
+!ENDIF
+
+DEBUG=0
+
+# Linker options
+# LINKFLAGS=/NODEFAULTLIB /NOLOGO /MACHINE:$(MACHINE) -entry:_DllMainCRTStartup@12 /DLL
+
+# x64
+LINKFLAGS=/NODEFAULTLIB /NOLOGO /MACHINE:$(MACHINE) -entry:_DllMainCRTStartup /DLL
+
+!IF "$(DEBUG)"== "1"
+CFLAGS=/D_DEBUG $(CFLAGS) /Od /Zi /MTd
+LINKFLAGS=$(LINKFLAGS) /DEBUG
+DLLIBC=msvcrtd.lib oldnames.lib libcpmtd.lib
+LIBS=$(DLLIBC) $(WINLIBS) FileGDBAPID.lib
+!ELSE
+CFLAGS=$(CFLAGS) /O2 /MT
+LINKFLAGS=$(LINKFLAGS) /RELEASE
+DLLIBC=msvcrt.lib oldnames.lib libcpmt.lib
+LIBS=$(DLLIBC) $(WINLIBS) FileGDBAPI.lib
+!ENDIF
+
+JAVA_INCLUDE="-I$(JAVA_HOME)\include" "-I$(JAVA_HOME)\include\win32"
+
+SRC_FILE=src\main\cxx\FGDBJNIWrapper_wrap.cxx
+TARGET_OBJ=target\o\FGDBJNIWrapper.obj
+TARGET_LIB=src\main\resources\native\winnt\$(ARCH)\FGDBJNIWrapper.dll
+
+all: clean $(TARGET_LIB)
+
+clean:
+	-@ if EXIST target\o del /q target\o
+	-@ if EXIST $(TARGET_OBJ) del /q $(TARGET_OBJ)
+	-@ if NOT EXIST target\o mkdir target\o
+
+$(SRC_FILE):
+
+$(TARGET_OBJ): $(SRC_FILE)
+	$(CC) $(CFLAGS) $(JAVA_INCLUDE) $(INCLUDE) -I$(ESRI_FILE_GBD_INCLUDE) $(SRC_FILE) /Fo$(TARGET_OBJ)
+
+$(TARGET_LIB): $(TARGET_OBJ)
+	$(LINK) $(LINKFLAGS) -out:$(TARGET_LIB) $(LDIR) $(LIBS) $(TARGET_OBJ)
+ 
