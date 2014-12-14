@@ -11,6 +11,10 @@ Binaries are included for the windows plateform, for ease of use.
 
 Schema are defined using the geodatabase xsd XMLSchema, wrappers are included in the driver permitting to not having to generate XML by hand.
 
+#Build the jar and install it to your .m2 repository
+
+	set JAVA_HOME=[YOUR_PATH_TO_JDK1.7_OR_UP]
+	gradlew install
 
 #How to use
 
