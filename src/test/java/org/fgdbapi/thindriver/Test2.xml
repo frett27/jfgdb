@@ -104,7 +104,8 @@
 								<HasM>false</HasM>
 								<HasZ>false</HasZ>
 								<SpatialReference xsi:type="esri:GeographicCoordinateSystem">
-									<WKT>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]</WKT>
+									<WKT>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]
+									</WKT>
 									<XOrigin>-200.0</XOrigin>
 									<YOrigin>-100.0</YOrigin>
 									<XYScale>10000.0</XYScale>
@@ -128,7 +129,7 @@
 		</IndexArray>
 	</Indexes>
 	<CLSID>{52353152-891A-11D0-BEC6-00805F7C4268}</CLSID>
-	<EXTCLSID/>
+	<EXTCLSID />
 	<RelationshipClassNames xsi:type="esri:Names" />
 	<AliasName>macouche</AliasName>
 	<ModelName>macouche</ModelName>
@@ -145,8 +146,8 @@
 	<HasM>false</HasM>
 	<HasZ>false</HasZ>
 	<HasSpatialIndex>true</HasSpatialIndex>
-	<AreaFieldName/>
-	<LengthFieldName/>
+	<AreaFieldName />
+	<LengthFieldName />
 	<Extent xsi:nil="true" />
 	<SpatialReference xsi:type="esri:GeographicCoordinateSystem">
 		<WKT>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]

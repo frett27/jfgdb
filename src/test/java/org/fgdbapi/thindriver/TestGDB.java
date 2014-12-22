@@ -41,15 +41,14 @@ public class TestGDB {
 
 	public static void main(String[] args) throws Exception {
 
-
-//		System.out.println("cree");
+		// System.out.println("cree");
 
 		DEFeatureClass de = constructTestDEFeatureClass();
-		
+
 		String s = serializeElement(de);
-		
+
 		System.out.println(s);
-		
+
 		File f = File.createTempFile("tmp", ".gdb");
 		f.delete();
 		f.mkdirs();
@@ -93,6 +92,7 @@ public class TestGDB {
 	 * @throws PropertyException
 	 */
 	protected static void createTestTable(Geodatabase g) throws Exception {
+		
 		DEFeatureClass de = constructTestDEFeatureClass();
 
 		String d = serializeElement(de);
@@ -102,20 +102,20 @@ public class TestGDB {
 		t.setWriteLock();
 		t.setLoadOnlyMode(true);
 		int cpt = 0;
-		
+
 		while (cpt++ < 1000000) {
 			Row row = t.createRowObject();
 			t.insertRow(row);
-			if ((cpt % 100000) == 0)
-			{
+			if ((cpt % 100000) == 0) {
 				long time = (System.nanoTime() - start) / 1000000;
-				System.out.println("elements par s :" + (cpt * 1.0 / time * 1000));
+				System.out.println("elements par s :"
+						+ (cpt * 1.0 / time * 1000));
 			}
-			
+
 		}
-		
+
 		long end = System.nanoTime();
-		System.out.println("time :" + (end - start)/1000000 + " ms");
+		System.out.println("time :" + (end - start) / 1000000 + " ms");
 
 	}
 
@@ -176,10 +176,10 @@ public class TestGDB {
 		de.setVersioned(false);
 		de.setCLSID("{52353152-891A-11D0-BEC6-00805F7C4268}");
 		// de.setExtent(null);
-		//de.setConfigurationKeyword("DEFAULT");
+		// de.setConfigurationKeyword("DEFAULT");
 		de.setModelName("macouche");
 		de.setAliasName("macouche");
-		//de.setHasGlobalID(false);
+		// de.setHasGlobalID(false);
 
 		PropertySet ps = new PropertySet();
 		de.setExtensionProperties(ps);
@@ -232,8 +232,8 @@ public class TestGDB {
 		geom.setGeometryType(EsriGeometryType.ESRI_GEOMETRY_POINT);
 		geom.setSpatialReference(gcs);
 		geom.setGridSize0((double) 0);
-		//geom.setHasM(false);
-		//geom.setHasZ(false);
+		// geom.setHasM(false);
+		// geom.setHasZ(false);
 		s.setGeometryDef(geom);
 
 		a.getField().add(s);
@@ -269,20 +269,20 @@ public class TestGDB {
 		arrayOfIndex.getIndex().add(sindex);
 
 		de.setAliasName("macouche");
-		//de.setHasM(false);
-		//de.setHasZ(false);
+		// de.setHasM(false);
+		// de.setHasZ(false);
 		de.setHasSpatialIndex(true);
 		de.setCatalogPath("\\macouche");
-		//de.setCanVersion(false);
+		// de.setCanVersion(false);
 
-		//de.setGlobalIDFieldName("");
+		// de.setGlobalIDFieldName("");
 		// de.setRasterFieldName("");
-		//de.setExtensionProperties(ps);
-		//de.setControllerMemberships(new ArrayOfControllerMembership());
+		// de.setExtensionProperties(ps);
+		// de.setControllerMemberships(new ArrayOfControllerMembership());
 		de.setModelName(de.getName());
-		//de.setAreaFieldName("");
-		//de.setLengthFieldName("");
-		//de.setEXTCLSID("");
+		// de.setAreaFieldName("");
+		// de.setLengthFieldName("");
+		// de.setEXTCLSID("");
 		return de;
 	}
 
