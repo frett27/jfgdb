@@ -35,7 +35,8 @@ compileJava {
 }
 
 repositories {
-     maven { url "http://repo.maven.apache.org/maven2" }
+	mavenLocal()
+    maven { url "http://repo.maven.apache.org/maven2" }
 }
 
 
