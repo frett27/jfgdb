@@ -7,6 +7,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
+import org.fgdbapi.thindriver.tools.Tools;
 import org.fgdbapi.thindriver.xml.ArrayOfControllerMembership;
 import org.fgdbapi.thindriver.xml.ArrayOfField;
 import org.fgdbapi.thindriver.xml.ArrayOfIndex;
@@ -103,6 +104,8 @@ public class TableHelper {
 		th.dataElement.setHasOID(true);
 		th.dataElement.setDatasetType(EsriDatasetType.ESRI_DT_TABLE);
 		th.dataElement.setVersioned(false);
+		th.dataElement.setControllerMemberships(new ArrayOfControllerMembership());
+
 
 		// to be adjusted
 		th.dataElement.setCLSID("{52353152-891A-11D0-BEC6-00805F7C4268}");
@@ -114,6 +117,8 @@ public class TableHelper {
 
 		return th;
 	}
+
+	
 
 	/**
 	 * create a new FeatureClass description
@@ -127,7 +132,7 @@ public class TableHelper {
 	 * @return the table helper
 	 */
 	public static TableHelper newFeatureClass(String name,
-			EsriGeometryType geomType, SpatialReference gcs) {
+			EsriGeometryType geomType, SpatialReference gcs) throws Exception {
 
 		assert name != null && !name.isEmpty();
 		assert gcs != null;
@@ -135,8 +140,10 @@ public class TableHelper {
 		TableHelper th = newTable(name);
 
 		DEFeatureClass fc = new DEFeatureClass();
-		fc.setFields(th.dataElement.getFields()); // retrieve the fields
-		fc.setIndexes(th.dataElement.getIndexes()); // retrieve the indices
+
+		// grab all the informations from the DETable to the DEFeatureClass
+		Tools.copy(th.dataElement, fc);
+		
 
 		th.dataElement = fc; // replace the dataElement
 
@@ -181,27 +188,18 @@ public class TableHelper {
 		e.setYMax(90);
 		fc.setExtent(e);
 
-		fc.setCatalogPath("\\" + name);
-		fc.setName(name);
 		fc.setFeatureType(EsriFeatureType.ESRI_FT_SIMPLE);
 		fc.setShapeType(geomType);
-		fc.setChildrenExpanded(false);
+		
 		fc.setRelationshipClassNames(new Names());
 		fc.setShapeFieldName("SHAPE");
 		fc.setHasM(false);
 		fc.setHasZ(false);
-		fc.setOIDFieldName("OBJECTID");
-		fc.setHasOID(true);
 		fc.setDatasetType(EsriDatasetType.ESRI_DT_FEATURE_CLASS);
-		fc.setVersioned(false);
 		fc.setCLSID("{52353152-891A-11D0-BEC6-00805F7C4268}"); // simple
 																// features
-		fc.setControllerMemberships(new ArrayOfControllerMembership());
-		
-		fc.setHasSpatialIndex(false);
 
-		fc.setModelName(name);
-		fc.setAliasName(name);
+		fc.setHasSpatialIndex(false);
 
 		fc.setSpatialReference(gcs);
 
@@ -224,7 +222,7 @@ public class TableHelper {
 	/**
 	 * construct the XML definition in a string
 	 * 
-	 * @return
+	 * @return the serialized string
 	 * @throws Exception
 	 */
 	public String buildAsString() throws Exception {
@@ -234,13 +232,20 @@ public class TableHelper {
 	/**
 	 * get the table / featureclass name
 	 * 
-	 * @return
+	 * @return the name of the table / feature class
 	 */
 	public String getName() {
 		return this.name;
 	}
 
 	// ////////////////////////////////
+	/**
+	 * 
+	 * @param de
+	 *            data element table
+	 * @return the serialized string of the xml
+	 * @throws Exception
+	 */
 	protected static String serializeElement(DETable de) throws Exception {
 
 		// FGDB API don't like the non "esri" prefix
@@ -267,28 +272,41 @@ public class TableHelper {
 		m.marshal(new JAXBElement<DataElement>(new QName(
 				"http://www.esri.com/schemas/ArcGIS/10.1", "DataElement"),
 				DataElement.class, de), sw);
-		
+
 		String rawResult = sw.getBuffer().toString();
-		
+
 		// event for empty values, we must put the xsi:type
-		// this should not be here ... but not taken into consideration in the Jaxb implementation
-		
-		rawResult = rawResult.replace("<ExtensionProperties", "<ExtensionProperties xsi:type=\"esri:PropertySet\"");
-		rawResult = rawResult.replace("<PropertyArray", "<PropertyArray xsi:type=\"esri:ArrayOfPropertySetProperty\"");
-		rawResult = rawResult.replace("<ControllerMemberships", "<ControllerMemberships xsi:type=\"esri:ArrayOfControllerMembership\"");
-		rawResult = rawResult.replace("<Fields", "<Fields xsi:type=\"esri:Fields\"");
-		rawResult = rawResult.replace("<FieldArray", "<FieldArray xsi:type=\"esri:ArrayOfField\"");
-		rawResult = rawResult.replace("<Field ", "<Field xsi:type=\"esri:Field\" ");
-		rawResult = rawResult.replace("<Field>", "<Field xsi:type=\"esri:Field\">");
-		
-		rawResult = rawResult.replace("<GeometryDef", "<GeometryDef xsi:type=\"esri:GeometryDef\"");
-		rawResult = rawResult.replace("<Indexes", "<Indexes xsi:type=\"esri:Indexes\"");
-		rawResult = rawResult.replace("<IndexArray", "<IndexArray xsi:type=\"esri:ArrayOfIndex\"");
-		rawResult = rawResult.replace("<Index>", "<Index xsi:type=\"esri:Index\">");
-		
-		rawResult = rawResult.replace("<RelationshipClassNames", "<RelationshipClassNames xsi:type=\"esri:Names\"");
-		
-		
+		// this should not be here ... but not taken into consideration in the
+		// Jaxb implementation
+
+		rawResult = rawResult.replace("<ExtensionProperties",
+				"<ExtensionProperties xsi:type=\"esri:PropertySet\"");
+		rawResult = rawResult.replace("<PropertyArray",
+				"<PropertyArray xsi:type=\"esri:ArrayOfPropertySetProperty\"");
+		rawResult = rawResult
+				.replace("<ControllerMemberships",
+						"<ControllerMemberships xsi:type=\"esri:ArrayOfControllerMembership\"");
+		rawResult = rawResult.replace("<Fields",
+				"<Fields xsi:type=\"esri:Fields\"");
+		rawResult = rawResult.replace("<FieldArray",
+				"<FieldArray xsi:type=\"esri:ArrayOfField\"");
+		rawResult = rawResult.replace("<Field ",
+				"<Field xsi:type=\"esri:Field\" ");
+		rawResult = rawResult.replace("<Field>",
+				"<Field xsi:type=\"esri:Field\">");
+
+		rawResult = rawResult.replace("<GeometryDef",
+				"<GeometryDef xsi:type=\"esri:GeometryDef\"");
+		rawResult = rawResult.replace("<Indexes",
+				"<Indexes xsi:type=\"esri:Indexes\"");
+		rawResult = rawResult.replace("<IndexArray",
+				"<IndexArray xsi:type=\"esri:ArrayOfIndex\"");
+		rawResult = rawResult.replace("<Index>",
+				"<Index xsi:type=\"esri:Index\">");
+
+		rawResult = rawResult.replace("<RelationshipClassNames",
+				"<RelationshipClassNames xsi:type=\"esri:Names\"");
+
 		return rawResult;
 	}
 
@@ -309,17 +327,50 @@ public class TableHelper {
 	}
 
 	/**
-	 * add a default integer field
+	 * add a default long field
 	 * 
 	 * @param name
-	 * @return
+	 *            the integer field name
+	 * @return the table helper
 	 */
-	public TableHelper addIntegerField(String name) {
+	public TableHelper addLongField(String name) {
 
 		Field f = new Field();
 		f.setName(name);
 		f.setType(EsriFieldType.ESRI_FIELD_TYPE_INTEGER);
-		f.setLength(4);
+		f.setLength(8);
+		f.setEditable(true);
+		f.setIsNullable(true);
+
+		return addField(f);
+
+	}
+	
+	
+	/**
+	 * add a default integer field
+	 * 
+	 * @param name
+	 *            the integer field name
+	 * @return the table helper
+	 */
+	public TableHelper addIntegerField(String name) {
+		return addIntegerField(name, 4);
+	}
+	
+	/**
+	 * add a default integer field
+	 * 
+	 * @param name
+	 *            the integer field name
+	 * @return the table helper
+	 */
+	public TableHelper addIntegerField(String name, int size) {
+
+		Field f = new Field();
+		f.setName(name);
+		f.setType(EsriFieldType.ESRI_FIELD_TYPE_INTEGER);
+		f.setLength(size);
 		f.setEditable(true);
 		f.setIsNullable(true);
 
@@ -332,7 +383,7 @@ public class TableHelper {
 	 * 
 	 * @param name
 	 * @param length
-	 * @return
+	 * @return the table helper
 	 */
 	public TableHelper addStringField(String name, int length) {
 
@@ -351,7 +402,7 @@ public class TableHelper {
 	 * add a double field
 	 * 
 	 * @param name
-	 * @return
+	 * @return the table helper
 	 */
 	public TableHelper addDoubleField(String name) {
 		Field f = new Field();
@@ -366,7 +417,7 @@ public class TableHelper {
 	/**
 	 * construct the W84 system reference
 	 * 
-	 * @return
+	 * @return the WGS84 geographic coordinate system
 	 */
 	public static GeographicCoordinateSystem constructW84SpatialReference() {
 

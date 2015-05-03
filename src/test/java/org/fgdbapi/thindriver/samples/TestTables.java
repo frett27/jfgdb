@@ -23,7 +23,6 @@ public class TestTables {
         tempFolder.delete();
         tempFolder.mkdirs();
 
-
         g = FGDBJNIWrapper.createGeodatabase(new File(tempFolder, "fgdb.gdb").getAbsolutePath());
 
     }
