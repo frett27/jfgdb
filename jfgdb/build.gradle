@@ -29,8 +29,9 @@ project(":jfgdb") {
         }
 
         compileJava {
-            options.compilerArgs = ['-XDignore.symbol.file']
             options.fork = true
+	    options.forkOptions.executable = 'javac'
+            options.compilerArgs << '-XDignore.symbol.file'
             sourceCompatibility = 1.7
         }
 
