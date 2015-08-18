@@ -1,0 +1,5 @@
+See file:///C:/projets/jfgdb/githubproject/jfgdb/nativewrapper/build/tmp/linkReleaseJfgdbwSharedLibrary/output.txt for all output for linkReleaseJfgdbwSharedLibrary.
+linking jfgdbw.dll successful.
+   Création de la bibliothèque C:\projets\jfgdb\githubproject\jfgdb\nativewrapper\build\binaries\jfgdbwSharedLibrary\release\jfgdbw.lib et de l'objet C:\projets\jfgdb\githubproject\jfgdb\nativewrapper\build\binaries\jfgdbwSharedLibrary\release\jfgdbw.exp
+
+Finished linkReleaseJfgdbwSharedLibrary, see full log file:///C:/projets/jfgdb/githubproject/jfgdb/nativewrapper/build/tmp/linkReleaseJfgdbwSharedLibrary/output.txt.

@@ -1,0 +1,103 @@
+
+group = 'fgdbapi'
+version = '0.1.1'
+
+
+    /*
+
+        native wrapper library	
+
+
+    */
+
+    apply plugin: 'cpp'
+
+
+    description = """native library for fgdb"""
+
+    def ESRI_FILE_GDB_HOME = new File("C:\\Projets\\fgdbjava\\FileGDB_API_VS2012_1_3")
+    def JAVA_HOME = new File(System.getenv('JAVA_HOME'))
+
+    if (!ESRI_FILE_GDB_HOME.exists()) throw Exception("folder " + ESRI_FILE_GDB_HOME + " does not exists");
+    if (!JAVA_HOME.exists()) throw Exception("folder " + JAVA_HOME + " does not exists");
+
+
+    model {
+        buildTypes {
+            debug
+            release
+        }
+        
+        platforms {
+            x86 {
+                architecture "x86"
+            } 
+            /*
+            x64 {
+                architecture "x86_64"
+            } */
+            /* itanium {
+                architecture "ia-64"
+            } */
+        }
+
+
+
+    components {
+            jfgdbw(NativeLibrarySpec) {
+
+
+                binaries.all {
+
+                    sources {
+                        cpp {
+                            source {
+                                srcDir "src/main/cxx"
+                                include "**/*.cxx"
+                            }
+                        }
+                    }
+
+                    if (toolChain in VisualCpp) {
+                    
+                            if (buildType == buildTypes.debug) {
+                                 cppCompiler.args "/Zi", "-I" + new File(ESRI_FILE_GDB_HOME, "include").getAbsolutePath(),
+                                                            "-I" + new File(JAVA_HOME, "include").getAbsolutePath(),
+                                                            "-I" + new File(JAVA_HOME, "include\\win32").getAbsolutePath()
+
+                               linker.args "/DEBUG", "/LIBPATH:${ESRI_FILE_GDB_HOME.getAbsolutePath()}\\lib",
+                                "/NODEFAULTLIB", "/NOLOGO", 
+                                "kernel32.lib", "advapi32.lib", "user32.lib", "gdi32.lib", "comdlg32.lib", "winspool.lib", "oleaut32.lib",
+                                "msvcrt.lib", "oldnames.lib", "libcpmt.lib",
+                                "FileGDBAPI.lib"
+
+                   
+                       
+
+                            } else {
+
+                                cppCompiler.args "/Zi", "-I" + new File(ESRI_FILE_GDB_HOME, "include").getAbsolutePath(),
+                                                            "-I" + new File(JAVA_HOME, "include").getAbsolutePath(),
+                                                            "-I" + new File(JAVA_HOME, "include\\win32").getAbsolutePath()
+                    
+                      
+                               linker.args "/DEBUG", "/LIBPATH:${ESRI_FILE_GDB_HOME.getAbsolutePath()}\\lib",
+                                "/NODEFAULTLIB", "/NOLOGO", 
+                                "kernel32.lib", "advapi32.lib", "user32.lib", "gdi32.lib", "comdlg32.lib", "winspool.lib", "oleaut32.lib",
+     
+                                "msvcrt.lib", "oldnames.lib", "libcpmt.lib",
+                                "FileGDBAPI.lib"
+
+
+                            }
+
+
+                                            }
+
+                }
+          
+            }
+        }
+    }
+
+

@@ -1,0 +1,3 @@
+/OUT:C:\projets\jfgdb\githubproject\jfgdb\nativewrapper\build\binaries\jfgdbwStaticLibrary\release\jfgdbw.lib
+/NOLOGO
+C:\projets\jfgdb\githubproject\jfgdb\nativewrapper\build\objs\jfgdbwStaticLibrary\release\jfgdbwCpp\8z9gj6h4yrjiofaha677x2clm\FGDBJNIWrapper_wrap.obj

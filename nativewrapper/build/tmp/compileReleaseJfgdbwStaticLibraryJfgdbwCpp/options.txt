@@ -1,0 +1,11 @@
+/TP
+/nologo
+/c
+/Zi
+-IC:\\Projets\\fgdbjava\\FileGDB_API_VS2012_1_3\\include
+-IC:\\Java\\jdk1.7.0_01\\include
+-IC:\\Java\\jdk1.7.0_01\\include\\win32
+/IC:\projets\jfgdb\githubproject\jfgdb\nativewrapper\src\jfgdbw\headers
+"/IC:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include"
+"/IC:\Program Files (x86)\Windows Kits\8.0\Include\shared"
+"/IC:\Program Files (x86)\Windows Kits\8.0\Include\um"
