@@ -15,7 +15,9 @@ version = '0.1.1'
 
     description = """native library for fgdb"""
 
-    def ESRI_FILE_GDB_HOME = new File("C:\\Projets\\fgdbjava\\FileGDB_API_VS2012_1_3")
+    if (!System.getenv('ESRI_FILE_GDB_HOME')) throw new Exception("environment variable ESRI_FILE_GDB_HOME must be defined")
+
+    def ESRI_FILE_GDB_HOME = new File(System.getenv('ESRI_FILE_GDB_HOME'));
     def JAVA_HOME = new File(System.getenv('JAVA_HOME'))
 
     if (!ESRI_FILE_GDB_HOME.exists()) throw Exception("folder " + ESRI_FILE_GDB_HOME + " does not exists");
