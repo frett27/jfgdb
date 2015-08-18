@@ -34,6 +34,7 @@ project(":jfgdb") {
         compileJava {
             options.compilerArgs = ['-XDignore.symbol.file']
             options.fork = true
+            sourceCompatibility = 1.7
         }
 
         repositories {
