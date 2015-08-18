@@ -8,7 +8,6 @@
 */
 
 
-project(":jfgdb") {
 
         apply plugin: 'java'
         apply plugin: 'maven'
@@ -30,7 +29,7 @@ project(":jfgdb") {
 
         compileJava {
             options.fork = true
-	    options.forkOptions.executable = 'javac'
+	        options.forkOptions.executable = 'javac'
             options.compilerArgs << '-XDignore.symbol.file'
             sourceCompatibility = 1.7
         }
@@ -47,4 +46,3 @@ project(":jfgdb") {
             testCompile group: 'junit', name: 'junit', version:'4.11'
         }
 
-}

@@ -9,6 +9,7 @@
     */
 
     apply plugin: 'cpp'
+    apply plugin: 'distribution'
 
 
     description = """native library for fgdb"""
@@ -21,6 +22,17 @@
 
     if (!ESRI_FILE_GDB_HOME.exists()) throw Exception("folder " + ESRI_FILE_GDB_HOME + " does not exists");
     if (!JAVA_HOME.exists()) throw Exception("folder " + JAVA_HOME + " does not exists");
+
+  distributions {
+        main {
+             baseName = "FGDBLibraaries"
+             contents {
+                        from { 'build/binaries/fGDBJNIWrapperSharedLibrary' }
+                    }
+        }
+
+    }
+
 
 
     model {
@@ -37,14 +49,13 @@
             } 
         }
 
-
-
+  
     components {
 
 
             FGDBJNIWrapper(NativeLibrarySpec) {
                 // targetPlatform "x86" // only available for windows
-                targetPlatform "x64"
+                // targetPlatform "x64"
 
                 binaries.all {
 

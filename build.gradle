@@ -1,5 +1,26 @@
+
+
 allprojects  {
         group = 'org.jfgdb'
         version = '0.1.1'
 }
+
+apply plugin:'distribution'
+
+ distributions {
+        main {
+             baseName = "jfgdb"
+             contents {
+                            from (project(':nativewrapper').buildDir) {
+                                include('binaries/**/*.dll') 
+                            }
+
+                        from {
+                            project(':jfgdb').jar
+                        }
+            }
+        }
+
+    }
+
 
