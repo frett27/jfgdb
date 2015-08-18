@@ -19,6 +19,7 @@ version = '0.1.1'
 
     def ESRI_FILE_GDB_HOME = new File(System.getenv('ESRI_FILE_GDB_HOME'));
     def JAVA_HOME = new File(System.getProperty('java.home'))
+    if (JAVA_HOME.name == "jre") JAVA_HOME = JAVA_HOME.parentFile
 
     if (!ESRI_FILE_GDB_HOME.exists()) throw Exception("folder " + ESRI_FILE_GDB_HOME + " does not exists");
     if (!JAVA_HOME.exists()) throw Exception("folder " + JAVA_HOME + " does not exists");
@@ -44,7 +45,7 @@ version = '0.1.1'
 
 
             FGDBJNIWrapper(NativeLibrarySpec) {
-                targetPlatform "x86"
+                // targetPlatform "x86" // only available for windows
                 targetPlatform "x64"
 
                 binaries.all {
@@ -77,10 +78,11 @@ version = '0.1.1'
                     } else {
 
                               cppCompiler.args "-I" + new File(ESRI_FILE_GDB_HOME, "include").getAbsolutePath(),
-                                                            "-I" + new File(JAVA_HOME, "include").getAbsolutePath()
+                                                            "-I" + new File(JAVA_HOME, "include").getAbsolutePath(),
+                                                            "-I" + new File(JAVA_HOME, "include/linux").getAbsolutePath()
 
                         
-                              linker.args "-L${ESRI_FILE_GDB_HOME.getAbsolutePath()}/lib${targetPlatform.name == 'x64'?'64':''}", "-lFileGDBAPI", "-lfgdbunixrtl"
+                              linker.args "-L${ESRI_FILE_GDB_HOME.getAbsolutePath()}/lib", "-lFileGDBAPI", "-lfgdbunixrtl"
      
 
 
