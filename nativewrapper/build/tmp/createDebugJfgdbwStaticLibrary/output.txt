@@ -1,4 +1,0 @@
-See file:///C:/projets/jfgdb/githubproject/jfgdb/nativewrapper/build/tmp/createDebugJfgdbwStaticLibrary/output.txt for all output for createDebugJfgdbwStaticLibrary.
-archiving jfgdbw.lib successful.
-
-Finished createDebugJfgdbwStaticLibrary, see full log file:///C:/projets/jfgdb/githubproject/jfgdb/nativewrapper/build/tmp/createDebugJfgdbwStaticLibrary/output.txt.

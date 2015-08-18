@@ -24,7 +24,6 @@ version = '0.1.1'
 
     model {
         buildTypes {
-            debug
             release
         }
         
@@ -32,20 +31,19 @@ version = '0.1.1'
             x86 {
                 architecture "x86"
             } 
-            /*
             x64 {
                 architecture "x86_64"
-            } */
-            /* itanium {
-                architecture "ia-64"
-            } */
+            } 
         }
 
 
 
     components {
-            jfgdbw(NativeLibrarySpec) {
 
+
+            FGDBJNIWrapper(NativeLibrarySpec) {
+                targetPlatform "x86"
+                targetPlatform "x64"
 
                 binaries.all {
 
@@ -60,39 +58,33 @@ version = '0.1.1'
 
                     if (toolChain in VisualCpp) {
                     
-                            if (buildType == buildTypes.debug) {
-                                 cppCompiler.args "/Zi", "-I" + new File(ESRI_FILE_GDB_HOME, "include").getAbsolutePath(),
-                                                            "-I" + new File(JAVA_HOME, "include").getAbsolutePath(),
-                                                            "-I" + new File(JAVA_HOME, "include\\win32").getAbsolutePath()
-
-                               linker.args "/DEBUG", "/LIBPATH:${ESRI_FILE_GDB_HOME.getAbsolutePath()}\\lib",
-                                "/NODEFAULTLIB", "/NOLOGO", 
-                                "kernel32.lib", "advapi32.lib", "user32.lib", "gdi32.lib", "comdlg32.lib", "winspool.lib", "oleaut32.lib",
-                                "msvcrt.lib", "oldnames.lib", "libcpmt.lib",
-                                "FileGDBAPI.lib"
-
-                   
-                       
-
-                            } else {
-
-                                cppCompiler.args "/Zi", "-I" + new File(ESRI_FILE_GDB_HOME, "include").getAbsolutePath(),
+                               cppCompiler.args "/Zi", "-I" + new File(ESRI_FILE_GDB_HOME, "include").getAbsolutePath(),
                                                             "-I" + new File(JAVA_HOME, "include").getAbsolutePath(),
                                                             "-I" + new File(JAVA_HOME, "include\\win32").getAbsolutePath()
                     
                       
-                               linker.args "/DEBUG", "/LIBPATH:${ESRI_FILE_GDB_HOME.getAbsolutePath()}\\lib",
-                                "/NODEFAULTLIB", "/NOLOGO", 
+                               linker.args "/LIBPATH:${ESRI_FILE_GDB_HOME.getAbsolutePath()}\\lib${targetPlatform.name == 'x64'?'64':''}",
+                                "/NODEFAULTLIB", "/NOLOGO", "/EHsc" ,
                                 "kernel32.lib", "advapi32.lib", "user32.lib", "gdi32.lib", "comdlg32.lib", "winspool.lib", "oleaut32.lib",
      
                                 "msvcrt.lib", "oldnames.lib", "libcpmt.lib",
                                 "FileGDBAPI.lib"
+                              //  "/MACHINE:" + (targetPlatform.name == "x64"?"x64":"IX86")
 
 
-                            }
+                    } else {
+
+                              cppCompiler.args "-I" + new File(ESRI_FILE_GDB_HOME, "include").getAbsolutePath(),
+                                                            "-I" + new File(JAVA_HOME, "include").getAbsolutePath()
+
+                        
+                              linker.args "-L${ESRI_FILE_GDB_HOME.getAbsolutePath()}/lib${targetPlatform.name == 'x64'?'64':''}", "-lFileGDBAPI", "-lfgdbunixrtl"
+     
 
 
-                                            }
+                    }
+
+                    
 
                 }
           
