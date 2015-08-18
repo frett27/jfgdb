@@ -1,0 +1,5 @@
+allprojects  {
+        group = 'org.jfgdb'
+        version = '0.1.1'
+}
+
