@@ -7,7 +7,6 @@ WORKDIR /
 COPY FileGDB_API_1_3-64.tar.gz /
 RUN tar xvfz FileGDB_API_1_3-64.tar.gz
 ENV ESRI_FILE_GDB_HOME=/FileGDB_API
-ENV JAVA_HOME=/usr/lib/jvm/java-7-oracle
 WORKDIR /
 
 RUN git clone http://github.com/frett27/jfgdb
