@@ -1,4 +1,5 @@
 FROM apopelo/java-oracle-1.7
+RUN apt-get update
 RUN apt-get -y --fix-missing install git
 RUN apt-get -y install g++
 RUN apt-get -y install gcc-multilib
