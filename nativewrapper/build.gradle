@@ -54,8 +54,8 @@
 
 
             FGDBJNIWrapper(NativeLibrarySpec) {
-                // targetPlatform "x86" // only available for windows
-                // targetPlatform "x64"
+                 targetPlatform "x86" // only available for windows
+                 targetPlatform "x64"
 
                 binaries.all {
 
