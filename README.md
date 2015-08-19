@@ -25,7 +25,7 @@ the result is in `build/distributions`
 
 #How to use
 
-2 - Place the given native FGDBJNIWrapper library, and FileGeodatabase API DLLs in the PATH or LD_LIBRARY_PATH (for linux)
+2 - Place the given native FGDBJNIWrapper library, and FileGeodatabase API DLLs in the PATH or LD\_LIBRARY\_PATH (for linux)
 
 3 - Use the jar file in you project
 
