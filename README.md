@@ -1,25 +1,31 @@
 #jfgdb - Java File Geodatabase thin driver
 
-The Filegeodatabase is a very efficient file format for storing GIS Data.
+FileGeodatabase (GDB) is a very efficient file format for storing GIS Data.
 
-This package and native library permit to use the ESRI FileGeodatabaseAPI (1.3).
+This package provide a java library to use the ESRI FileGeodatabaseAPI (1.3).
 
 More informations on the FileGeodatabase API can be found here : [http://www.esri.com/software/arcgis/geodatabase/interoperability](http://www.esri.com/software/arcgis/geodatabase/interoperability)
 
-This library has been compiled and partially tested on Windows X64/x86, but should also compile on MacOS, Linux.
-Binaries are included for the windows plateform, for ease of use.
+This library has been compiled and tested on Windows X64/x86, Linux. 
+Binaries are included for the windows plateform, for ease of use. Compilation on other plateforms are one command line far.
 
-Schema are defined using the geodatabase xsd XMLSchema, wrappers are included in the driver permitting to not having to generate XML by hand.
 
-#Build the jar and install it to your .m2 repository
+#How To Build the jar and native wrappers 
+
+
+	git clone https://github.com/frett27/jfgdb
 
 	set JAVA_HOME=[YOUR_PATH_TO_JDK1.7_OR_UP]
-	gradlew install
+	set ESRI_FILE_GDB_HOME=[YOUR_PATH_TO_ESRIFGB1.3ROOTDIRECTORY]
+	gradlew build -x test distZip
+
+
+the result is in `build/distributions`
+
 
 #How to use
 
-1 - Download the FileGeodatabase API from the above link
-
-2 - Place the given native FGDBJNIWrapper library, and FileGeodatabase API DLLs in the path
+2 - Place the given native FGDBJNIWrapper library, and FileGeodatabase API DLLs in the PATH or LD_LIBRARY_PATH (for linux)
 
 3 - Use the jar file in you project
+
