@@ -13,7 +13,7 @@ WORKDIR /
 RUN git clone http://github.com/frett27/jfgdb
 WORKDIR /jfgdb
 
-RUN git checkout PFR_simplifybuild
+RUN git checkout master
 
 RUN /bin/bash ./gradlew tasks
 
