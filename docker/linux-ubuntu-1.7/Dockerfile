@@ -19,7 +19,7 @@ ENV PATH $JAVA_HOME/bin:$PATH
 WORKDIR /
 COPY FileGDB_API_1_4-64.tar.gz /
 RUN tar xvfz FileGDB_API_1_4-64.tar.gz
-ENV ESRI_FILE_GDB_HOME=/FileGDB_API
+ENV ESRI_FILE_GDB_HOME=/FileGDB_API-64
 WORKDIR /
 
 RUN git clone http://github.com/frett27/jfgdb
