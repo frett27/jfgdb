@@ -19,11 +19,13 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
-apply plugin: "jp.classmethod.aws.s3"
+if (System.getProperty("java.class.version") > "51") {
+    apply plugin: "jp.classmethod.aws.s3"
 
-aws {
-  profileName = 'default'
-  region = 'Ireland'
+    aws {
+      profileName = 'default'
+      region = 'Ireland'
+    }
 }
 
 compileJava {
@@ -66,11 +68,13 @@ task copySharedLibsInResources(type:Copy) {
    }
 
 }
-
-task syncBinariesObjects(type: jp.classmethod.aws.gradle.s3.SyncTask) {
-  bucketName 'jfgdb'
-  source file(rootOutputLibs)
-  prefix "sharedlibraries/${project.version}/"
+if (System.getProperty("java.class.version") > "51") {
+    task syncBinariesObjects(type: jp.classmethod.aws.gradle.s3.SyncTask) {
+      bucketName 'jfgdb'
+      source file(rootOutputLibs)
+      prefix "sharedlibraries/${project.version}/"
+    }
+    syncBinariesObjects.dependsOn copySharedLibsInResources
 }
 
 task createVersionPropertyFile << {
@@ -79,7 +83,6 @@ task createVersionPropertyFile << {
     versionProp.save(new FileOutputStream(new File(project.buildDir, "resources/main/fgdbversion.properties")), "jfgdbapi version")
 }
 
-syncBinariesObjects.dependsOn copySharedLibsInResources
 compileJava.dependsOn copySharedLibsInResources
 compileJava.dependsOn createVersionPropertyFile
 
