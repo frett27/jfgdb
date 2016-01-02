@@ -650,70 +650,6 @@ SWIGINTERN std::vector< FileGDBAPI::FieldDef > FileGDBAPI_EnumRows_getFields(Fil
     checkResult(self->GetFields(value));
     return value;
   }
-SWIGINTERN int FileGDBAPI_SpatialReference_getId(FileGDBAPI::SpatialReference *self){
-    int result;
-    checkResult(self->GetSpatialReferenceID(result));
-    return result;
-  }
-SWIGINTERN std::wstring FileGDBAPI_SpatialReference_getText(FileGDBAPI::SpatialReference *self){
-    std::wstring value;
-    checkResult(self->GetSpatialReferenceText(value));
-    return value;
-  }
-SWIGINTERN double FileGDBAPI_SpatialReference_getXFalseOrigin(FileGDBAPI::SpatialReference *self){
-    double falseX;
-    double falseY;
-    double xyUnits;
-    checkResult(self->GetFalseOriginAndUnits(falseX, falseY, xyUnits));
-    return falseX;
-  }
-SWIGINTERN double FileGDBAPI_SpatialReference_getYFalseOrigin(FileGDBAPI::SpatialReference *self){
-    double falseX;
-    double falseY;
-    double xyUnits;
-    checkResult(self->GetFalseOriginAndUnits(falseX, falseY, xyUnits));
-    return falseY;
-  }
-SWIGINTERN double FileGDBAPI_SpatialReference_getXYUnits(FileGDBAPI::SpatialReference *self){
-    double falseX;
-    double falseY;
-    double xyUnits;
-    checkResult(self->GetFalseOriginAndUnits(falseX, falseY, xyUnits));
-    return xyUnits;
-  }
-SWIGINTERN double FileGDBAPI_SpatialReference_getMFalseOrigin(FileGDBAPI::SpatialReference *self){
-    double falseM;
-    double mUnits;
-    checkResult(self->GetMFalseOriginAndUnits(falseM, mUnits));
-    return falseM;
-  }
-SWIGINTERN double FileGDBAPI_SpatialReference_getMUnits(FileGDBAPI::SpatialReference *self){
-    double falseM;
-    double mUnits;
-    checkResult(self->GetMFalseOriginAndUnits(falseM, mUnits));
-    return mUnits;
-  }
-SWIGINTERN double FileGDBAPI_SpatialReference_getMTolerance(FileGDBAPI::SpatialReference *self){
-    double result;
-    checkResult(self->GetMTolerance(result));
-    return result;
-  }
-SWIGINTERN double FileGDBAPI_SpatialReference_getXYTolerance(FileGDBAPI::SpatialReference *self){
-    double result;
-    checkResult(self->GetXYTolerance(result));
-    return result;
-  }
-SWIGINTERN double FileGDBAPI_SpatialReference_getXUnits(FileGDBAPI::SpatialReference *self){
-    double falseZ;
-    double zUnits;
-    checkResult(self->GetMFalseOriginAndUnits(falseZ, zUnits));
-    return zUnits;
-  }
-SWIGINTERN double FileGDBAPI_SpatialReference_getZTolerance(FileGDBAPI::SpatialReference *self){
-    double result;
-    checkResult(self->GetZTolerance(result));
-    return result;
-  }
 SWIGINTERN bool FileGDBAPI_GeometryDef_hasM(FileGDBAPI::GeometryDef *self){
     bool result;
     checkResult(self->GetHasM(result));
@@ -2049,6 +1985,29 @@ SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_Geoda
   {
     try {
       result = (fgdbError)(arg1)->Delete((std::wstring const &)*arg2,(std::wstring const &)*arg3);;
+    } catch (const std::runtime_error& e) {
+      handleException(jenv, e);
+    } catch (const std::exception& e) {
+      handleException(jenv, e);
+    }
+  }
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_Geodatabase_1CompactDatabase(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  FileGDBAPI::Geodatabase *arg1 = (FileGDBAPI::Geodatabase *) 0 ;
+  fgdbError result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(FileGDBAPI::Geodatabase **)&jarg1; 
+  {
+    try {
+      result = (fgdbError)(arg1)->CompactDatabase();;
     } catch (const std::runtime_error& e) {
       handleException(jenv, e);
     } catch (const std::exception& e) {
@@ -5064,24 +5023,30 @@ SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_Spati
 }
 
 
-SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1SetFalseOriginAndUnits(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2, jdouble jarg3, jdouble jarg4) {
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1GetXYFalseOrigin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jlong jarg3) {
   jint jresult = 0 ;
   FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
-  double arg2 ;
-  double arg3 ;
-  double arg4 ;
+  double *arg2 = 0 ;
+  double *arg3 = 0 ;
   fgdbError result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
-  arg2 = (double)jarg2; 
-  arg3 = (double)jarg3; 
-  arg4 = (double)jarg4; 
+  arg2 = *(double **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "double & reference is null");
+    return 0;
+  } 
+  arg3 = *(double **)&jarg3;
+  if (!arg3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "double & reference is null");
+    return 0;
+  } 
   {
     try {
-      result = (fgdbError)(arg1)->SetFalseOriginAndUnits(arg2,arg3,arg4);;
+      result = (fgdbError)(arg1)->GetXYFalseOrigin(*arg2,*arg3);;
     } catch (const std::runtime_error& e) {
       handleException(jenv, e);
     } catch (const std::exception& e) {
@@ -5093,7 +5058,7 @@ SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_Spati
 }
 
 
-SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1SetZFalseOriginAndUnits(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2, jdouble jarg3) {
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1SetXYFalseOrigin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2, jdouble jarg3) {
   jint jresult = 0 ;
   FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
   double arg2 ;
@@ -5108,7 +5073,7 @@ SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_Spati
   arg3 = (double)jarg3; 
   {
     try {
-      result = (fgdbError)(arg1)->SetZFalseOriginAndUnits(arg2,arg3);;
+      result = (fgdbError)(arg1)->SetXYFalseOrigin(arg2,arg3);;
     } catch (const std::runtime_error& e) {
       handleException(jenv, e);
     } catch (const std::exception& e) {
@@ -5120,11 +5085,39 @@ SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_Spati
 }
 
 
-SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1SetMFalseOriginAndUnits(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2, jdouble jarg3) {
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1GetXYResolution(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  jint jresult = 0 ;
+  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
+  double *arg2 = 0 ;
+  fgdbError result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
+  arg2 = *(double **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "double & reference is null");
+    return 0;
+  } 
+  {
+    try {
+      result = (fgdbError)(arg1)->GetXYResolution(*arg2);;
+    } catch (const std::runtime_error& e) {
+      handleException(jenv, e);
+    } catch (const std::exception& e) {
+      handleException(jenv, e);
+    }
+  }
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1SetXYResolution(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
   jint jresult = 0 ;
   FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
   double arg2 ;
-  double arg3 ;
   fgdbError result;
   
   (void)jenv;
@@ -5132,10 +5125,9 @@ SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_Spati
   (void)jarg1_;
   arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
   arg2 = (double)jarg2; 
-  arg3 = (double)jarg3; 
   {
     try {
-      result = (fgdbError)(arg1)->SetMFalseOriginAndUnits(arg2,arg3);;
+      result = (fgdbError)(arg1)->SetXYResolution(arg2);;
     } catch (const std::runtime_error& e) {
       handleException(jenv, e);
     } catch (const std::exception& e) {
@@ -5172,6 +5164,114 @@ SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_Spati
 }
 
 
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1GetZFalseOrigin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  jint jresult = 0 ;
+  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
+  double *arg2 = 0 ;
+  fgdbError result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
+  arg2 = *(double **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "double & reference is null");
+    return 0;
+  } 
+  {
+    try {
+      result = (fgdbError)(arg1)->GetZFalseOrigin(*arg2);;
+    } catch (const std::runtime_error& e) {
+      handleException(jenv, e);
+    } catch (const std::exception& e) {
+      handleException(jenv, e);
+    }
+  }
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1SetZFalseOrigin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  jint jresult = 0 ;
+  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
+  double arg2 ;
+  fgdbError result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
+  arg2 = (double)jarg2; 
+  {
+    try {
+      result = (fgdbError)(arg1)->SetZFalseOrigin(arg2);;
+    } catch (const std::runtime_error& e) {
+      handleException(jenv, e);
+    } catch (const std::exception& e) {
+      handleException(jenv, e);
+    }
+  }
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1GetZResolution(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  jint jresult = 0 ;
+  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
+  double *arg2 = 0 ;
+  fgdbError result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
+  arg2 = *(double **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "double & reference is null");
+    return 0;
+  } 
+  {
+    try {
+      result = (fgdbError)(arg1)->GetZResolution(*arg2);;
+    } catch (const std::runtime_error& e) {
+      handleException(jenv, e);
+    } catch (const std::exception& e) {
+      handleException(jenv, e);
+    }
+  }
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1SetZResolution(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  jint jresult = 0 ;
+  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
+  double arg2 ;
+  fgdbError result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
+  arg2 = (double)jarg2; 
+  {
+    try {
+      result = (fgdbError)(arg1)->SetZResolution(arg2);;
+    } catch (const std::runtime_error& e) {
+      handleException(jenv, e);
+    } catch (const std::exception& e) {
+      handleException(jenv, e);
+    }
+  }
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1SetZTolerance(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
   jint jresult = 0 ;
   FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
@@ -5186,6 +5286,114 @@ SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_Spati
   {
     try {
       result = (fgdbError)(arg1)->SetZTolerance(arg2);;
+    } catch (const std::runtime_error& e) {
+      handleException(jenv, e);
+    } catch (const std::exception& e) {
+      handleException(jenv, e);
+    }
+  }
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1GetMFalseOrigin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  jint jresult = 0 ;
+  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
+  double *arg2 = 0 ;
+  fgdbError result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
+  arg2 = *(double **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "double & reference is null");
+    return 0;
+  } 
+  {
+    try {
+      result = (fgdbError)(arg1)->GetMFalseOrigin(*arg2);;
+    } catch (const std::runtime_error& e) {
+      handleException(jenv, e);
+    } catch (const std::exception& e) {
+      handleException(jenv, e);
+    }
+  }
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1SetMFalseOrigin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  jint jresult = 0 ;
+  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
+  double arg2 ;
+  fgdbError result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
+  arg2 = (double)jarg2; 
+  {
+    try {
+      result = (fgdbError)(arg1)->SetMFalseOrigin(arg2);;
+    } catch (const std::runtime_error& e) {
+      handleException(jenv, e);
+    } catch (const std::exception& e) {
+      handleException(jenv, e);
+    }
+  }
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1GetMResolution(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  jint jresult = 0 ;
+  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
+  double *arg2 = 0 ;
+  fgdbError result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
+  arg2 = *(double **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "double & reference is null");
+    return 0;
+  } 
+  {
+    try {
+      result = (fgdbError)(arg1)->GetMResolution(*arg2);;
+    } catch (const std::runtime_error& e) {
+      handleException(jenv, e);
+    } catch (const std::exception& e) {
+      handleException(jenv, e);
+    }
+  }
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1SetMResolution(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  jint jresult = 0 ;
+  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
+  double arg2 ;
+  fgdbError result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
+  arg2 = (double)jarg2; 
+  {
+    try {
+      result = (fgdbError)(arg1)->SetMResolution(arg2);;
     } catch (const std::runtime_error& e) {
       handleException(jenv, e);
     } catch (const std::exception& e) {
@@ -5218,265 +5426,6 @@ SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_Spati
     }
   }
   jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1getId(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
-  {
-    try {
-      result = (int)FileGDBAPI_SpatialReference_getId(arg1);;
-    } catch (const std::runtime_error& e) {
-      handleException(jenv, e);
-    } catch (const std::exception& e) {
-      handleException(jenv, e);
-    }
-  }
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jstring JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1getText(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jstring jresult = 0 ;
-  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
-  std::wstring result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
-  {
-    try {
-      result = FileGDBAPI_SpatialReference_getText(arg1);;
-    } catch (const std::runtime_error& e) {
-      handleException(jenv, e);
-    } catch (const std::exception& e) {
-      handleException(jenv, e);
-    }
-  }
-  jsize result_len = (&result)->length();
-  jchar *conv_buf = new jchar[result_len];
-  for (jsize i = 0; i < result_len; ++i) {
-    conv_buf[i] = (jchar)result[i];
-  }
-  jresult = jenv->NewString(conv_buf, result_len);
-  delete [] conv_buf; 
-  return jresult;
-}
-
-
-SWIGEXPORT jdouble JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1getXFalseOrigin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jdouble jresult = 0 ;
-  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
-  double result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
-  {
-    try {
-      result = (double)FileGDBAPI_SpatialReference_getXFalseOrigin(arg1);;
-    } catch (const std::runtime_error& e) {
-      handleException(jenv, e);
-    } catch (const std::exception& e) {
-      handleException(jenv, e);
-    }
-  }
-  jresult = (jdouble)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jdouble JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1getYFalseOrigin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jdouble jresult = 0 ;
-  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
-  double result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
-  {
-    try {
-      result = (double)FileGDBAPI_SpatialReference_getYFalseOrigin(arg1);;
-    } catch (const std::runtime_error& e) {
-      handleException(jenv, e);
-    } catch (const std::exception& e) {
-      handleException(jenv, e);
-    }
-  }
-  jresult = (jdouble)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jdouble JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1getXYUnits(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jdouble jresult = 0 ;
-  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
-  double result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
-  {
-    try {
-      result = (double)FileGDBAPI_SpatialReference_getXYUnits(arg1);;
-    } catch (const std::runtime_error& e) {
-      handleException(jenv, e);
-    } catch (const std::exception& e) {
-      handleException(jenv, e);
-    }
-  }
-  jresult = (jdouble)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jdouble JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1getMFalseOrigin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jdouble jresult = 0 ;
-  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
-  double result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
-  {
-    try {
-      result = (double)FileGDBAPI_SpatialReference_getMFalseOrigin(arg1);;
-    } catch (const std::runtime_error& e) {
-      handleException(jenv, e);
-    } catch (const std::exception& e) {
-      handleException(jenv, e);
-    }
-  }
-  jresult = (jdouble)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jdouble JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1getMUnits(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jdouble jresult = 0 ;
-  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
-  double result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
-  {
-    try {
-      result = (double)FileGDBAPI_SpatialReference_getMUnits(arg1);;
-    } catch (const std::runtime_error& e) {
-      handleException(jenv, e);
-    } catch (const std::exception& e) {
-      handleException(jenv, e);
-    }
-  }
-  jresult = (jdouble)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jdouble JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1getMTolerance(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jdouble jresult = 0 ;
-  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
-  double result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
-  {
-    try {
-      result = (double)FileGDBAPI_SpatialReference_getMTolerance(arg1);;
-    } catch (const std::runtime_error& e) {
-      handleException(jenv, e);
-    } catch (const std::exception& e) {
-      handleException(jenv, e);
-    }
-  }
-  jresult = (jdouble)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jdouble JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1getXYTolerance(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jdouble jresult = 0 ;
-  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
-  double result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
-  {
-    try {
-      result = (double)FileGDBAPI_SpatialReference_getXYTolerance(arg1);;
-    } catch (const std::runtime_error& e) {
-      handleException(jenv, e);
-    } catch (const std::exception& e) {
-      handleException(jenv, e);
-    }
-  }
-  jresult = (jdouble)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jdouble JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1getXUnits(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jdouble jresult = 0 ;
-  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
-  double result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
-  {
-    try {
-      result = (double)FileGDBAPI_SpatialReference_getXUnits(arg1);;
-    } catch (const std::runtime_error& e) {
-      handleException(jenv, e);
-    } catch (const std::exception& e) {
-      handleException(jenv, e);
-    }
-  }
-  jresult = (jdouble)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jdouble JNICALL Java_org_fgdbapi_thindriver_swig_FGDBJNIWrapperJNI_SpatialReference_1getZTolerance(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jdouble jresult = 0 ;
-  FileGDBAPI::SpatialReference *arg1 = (FileGDBAPI::SpatialReference *) 0 ;
-  double result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(FileGDBAPI::SpatialReference **)&jarg1; 
-  {
-    try {
-      result = (double)FileGDBAPI_SpatialReference_getZTolerance(arg1);;
-    } catch (const std::runtime_error& e) {
-      handleException(jenv, e);
-    } catch (const std::exception& e) {
-      handleException(jenv, e);
-    }
-  }
-  jresult = (jdouble)result; 
   return jresult;
 }
 

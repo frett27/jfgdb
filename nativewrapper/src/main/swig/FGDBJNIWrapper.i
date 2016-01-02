@@ -636,6 +636,8 @@ void handleException(JNIEnv *jenv, const std::runtime_error e) {
 %ignore FileGDBAPI::SpatialReference::GetXYTolerance;
 %ignore FileGDBAPI::SpatialReference::GetZFalseOriginAndUnits;
 %ignore FileGDBAPI::SpatialReference::GetZTolerance;
+
+/*
 %extend FileGDBAPI::SpatialReference {
   int getId() {
     int result;
@@ -708,6 +710,8 @@ void handleException(JNIEnv *jenv, const std::runtime_error e) {
     return result;
   }
 }
+
+*/
 %ignore FileGDBAPI::IndexDef::GetIsUnique;
 %ignore FileGDBAPI::IndexDef::GetName;
 %ignore FileGDBAPI::IndexDef::GetFields;

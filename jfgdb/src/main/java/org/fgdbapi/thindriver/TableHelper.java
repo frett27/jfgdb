@@ -78,7 +78,7 @@ public class TableHelper {
 		Index oid = new Index();
 		oid.setName("OIDINDEX");
 
-		Fields sfields = flds;
+		Fields sfields = new Fields();
 		ArrayOfField indexsarrayOfField = new ArrayOfField();
 		sfields.setFieldArray(indexsarrayOfField);
 		indexsarrayOfField.getField().add(o);
@@ -437,4 +437,6 @@ public class TableHelper {
 		return gcs;
 	}
 
+	
+	
 }

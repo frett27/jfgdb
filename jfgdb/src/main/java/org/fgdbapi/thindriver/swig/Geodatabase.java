@@ -66,6 +66,10 @@ public class Geodatabase {
     return FGDBJNIWrapperJNI.Geodatabase_Delete(swigCPtr, this, path, datasetType);
   }
 
+  public int CompactDatabase() {
+    return FGDBJNIWrapperJNI.Geodatabase_CompactDatabase(swigCPtr, this);
+  }
+
   public Geodatabase() {
     this(FGDBJNIWrapperJNI.new_Geodatabase(), true);
   }

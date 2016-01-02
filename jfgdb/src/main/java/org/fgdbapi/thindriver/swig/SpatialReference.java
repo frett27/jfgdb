@@ -43,76 +43,49 @@ public class SpatialReference {
     return FGDBJNIWrapperJNI.SpatialReference_SetSpatialReferenceText(swigCPtr, this, spatialReference);
   }
 
-  public int SetSpatialReferenceID(int wkid) {
-    return FGDBJNIWrapperJNI.SpatialReference_SetSpatialReferenceID(swigCPtr, this, wkid);
+  public int SetSpatialReferenceID(int srid) {
+    return FGDBJNIWrapperJNI.SpatialReference_SetSpatialReferenceID(swigCPtr, this, srid);
   }
 
-  public int SetFalseOriginAndUnits(double falseX, double falseY, double xyUnits) {
-    return FGDBJNIWrapperJNI.SpatialReference_SetFalseOriginAndUnits(swigCPtr, this, falseX, falseY, xyUnits);
+ 
+
+  public int SetXYFalseOrigin(double falseX, double falseY) {
+    return FGDBJNIWrapperJNI.SpatialReference_SetXYFalseOrigin(swigCPtr, this, falseX, falseY);
   }
 
-  public int SetZFalseOriginAndUnits(double falseZ, double zUnits) {
-    return FGDBJNIWrapperJNI.SpatialReference_SetZFalseOriginAndUnits(swigCPtr, this, falseZ, zUnits);
-  }
 
-  public int SetMFalseOriginAndUnits(double falseM, double mUnits) {
-    return FGDBJNIWrapperJNI.SpatialReference_SetMFalseOriginAndUnits(swigCPtr, this, falseM, mUnits);
+  public int SetXYResolution(double xyResolution) {
+    return FGDBJNIWrapperJNI.SpatialReference_SetXYResolution(swigCPtr, this, xyResolution);
   }
 
   public int SetXYTolerance(double xyTolerance) {
     return FGDBJNIWrapperJNI.SpatialReference_SetXYTolerance(swigCPtr, this, xyTolerance);
   }
 
+
+  public int SetZFalseOrigin(double falseZ) {
+    return FGDBJNIWrapperJNI.SpatialReference_SetZFalseOrigin(swigCPtr, this, falseZ);
+  }
+
+  public int SetZResolution(double zResolution) {
+    return FGDBJNIWrapperJNI.SpatialReference_SetZResolution(swigCPtr, this, zResolution);
+  }
+
   public int SetZTolerance(double zTolerance) {
     return FGDBJNIWrapperJNI.SpatialReference_SetZTolerance(swigCPtr, this, zTolerance);
   }
 
+
+  public int SetMFalseOrigin(double falseM) {
+    return FGDBJNIWrapperJNI.SpatialReference_SetMFalseOrigin(swigCPtr, this, falseM);
+  }
+
+  public int SetMResolution(double mResolution) {
+    return FGDBJNIWrapperJNI.SpatialReference_SetMResolution(swigCPtr, this, mResolution);
+  }
+
   public int SetMTolerance(double mTolerance) {
     return FGDBJNIWrapperJNI.SpatialReference_SetMTolerance(swigCPtr, this, mTolerance);
-  }
-
-  public int getId() {
-    return FGDBJNIWrapperJNI.SpatialReference_getId(swigCPtr, this);
-  }
-
-  public String getText() {
-    return FGDBJNIWrapperJNI.SpatialReference_getText(swigCPtr, this);
-  }
-
-  public double getXFalseOrigin() {
-    return FGDBJNIWrapperJNI.SpatialReference_getXFalseOrigin(swigCPtr, this);
-  }
-
-  public double getYFalseOrigin() {
-    return FGDBJNIWrapperJNI.SpatialReference_getYFalseOrigin(swigCPtr, this);
-  }
-
-  public double getXYUnits() {
-    return FGDBJNIWrapperJNI.SpatialReference_getXYUnits(swigCPtr, this);
-  }
-
-  public double getMFalseOrigin() {
-    return FGDBJNIWrapperJNI.SpatialReference_getMFalseOrigin(swigCPtr, this);
-  }
-
-  public double getMUnits() {
-    return FGDBJNIWrapperJNI.SpatialReference_getMUnits(swigCPtr, this);
-  }
-
-  public double getMTolerance() {
-    return FGDBJNIWrapperJNI.SpatialReference_getMTolerance(swigCPtr, this);
-  }
-
-  public double getXYTolerance() {
-    return FGDBJNIWrapperJNI.SpatialReference_getXYTolerance(swigCPtr, this);
-  }
-
-  public double getXUnits() {
-    return FGDBJNIWrapperJNI.SpatialReference_getXUnits(swigCPtr, this);
-  }
-
-  public double getZTolerance() {
-    return FGDBJNIWrapperJNI.SpatialReference_getZTolerance(swigCPtr, this);
   }
 
 }
