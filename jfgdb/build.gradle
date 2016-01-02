@@ -82,7 +82,9 @@ if (System.getProperty("java.class.version") >= "52") {
 task createVersionPropertyFile << {
     def versionProp = new java.util.Properties()
     versionProp.setProperty("version", project.version)
-    versionProp.save(new FileOutputStream(new File(project.buildDir, "resources/main/fgdbversion.properties")), "jfgdbapi version")
+    def resourcemain = new File(project.buildDir, "resources/main")
+    resourcemain.mkdirs()
+    versionProp.save(new FileOutputStream(new File(resourcemain,"fgdbversion.properties")), "jfgdbapi version")
 }
 
 compileJava.dependsOn copySharedLibsInResources
