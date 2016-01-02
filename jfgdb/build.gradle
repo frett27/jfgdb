@@ -1,48 +1,85 @@
 
-
 /*
+ Java FileGeodatabase Thin driver
+ */
 
-	Java FileGeodatabase Thin driver
+description = """Rough ESRI File Geodatabase Java API"""
 
-
-*/
-
-
-
-        apply plugin: 'java'
-        apply plugin: 'maven'
-        apply plugin: 'eclipse'
-
-        description = """Rough ESRI File Geodatabase Java API"""
-
-
-        sourceSets {
-            main {
-                java {
-                    srcDir 'src/java'
-                }
-                resources {
-                    srcDir 'src/resources'
-                }
-            }
-        }
-
-        compileJava {
-            options.fork = true
-	        options.forkOptions.executable = 'javac'
-            options.compilerArgs << '-XDignore.symbol.file'
-            sourceCompatibility = 1.7
-        }
-
-        repositories {
-            mavenLocal()
-            maven { url "http://repo.maven.apache.org/maven2" }
-        }
+buildscript {
+  repositories {
+    mavenCentral()
+    maven { url "https://plugins.gradle.org/m2/" }
+  }
+  dependencies {
+    classpath "jp.classmethod.aws:gradle-aws-plugin:0.+"
+  }
+}
 
 
-        dependencies {
-            compile group: 'com.esri.geometry', name: 'esri-geometry-api', version:'1.2.1'
-            compile group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version:'2.5.0'
-            testCompile group: 'junit', name: 'junit', version:'4.11'
-        }
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: "jp.classmethod.aws.s3"
+
+aws {
+  profileName = 'default'
+  region = 'Ireland'
+}
+
+compileJava {
+	options.fork = true
+	options.forkOptions.executable = 'javac'
+	options.compilerArgs << '-XDignore.symbol.file'
+	sourceCompatibility = 1.7
+}
+
+repositories {
+	mavenLocal()
+	maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+dependencies {
+	compile group: 'com.esri.geometry', name: 'esri-geometry-api', version:'1.2.1'
+	compile group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version:'2.5.0'
+	testCompile group: 'junit', name: 'junit', version:'4.11'
+}
+
+
+////////////////////////////////////////////////////////////////////////
+// binaries management - sync binaries into S3 folder - download all libraries from S3
+
+def rootOutputLibs = new File(project.buildDir , "/resources/main/sharedlibraries/" + project.version)
+def outputlibsdir = new File(rootOutputLibs, "${System.getProperty('os.name')}/${System.getProperty('os.arch')}")
+
+task copySharedLibsInResources(type:Copy) {
+   from( "../nativewrapper/build/binaries/fGDBJNIWrapperSharedLibrary")
+   include("*.*")
+   into(outputlibsdir)
+   assert  System.getenv("ESRI_FILE_GDB_HOME") != null 
+   from( System.getenv("ESRI_FILE_GDB_HOME") + "/bin64")
+   include("*")
+   exclude("*.pdb")
+   into(outputlibsdir)     
+   doLast {
+        String l = (outputlibsdir.listFiles().collect { it.name }).join(",")
+        new File(outputlibsdir, "files").newWriter().write(l) 
+   }
+
+}
+
+task syncBinariesObjects(type: jp.classmethod.aws.gradle.s3.SyncTask) {
+  bucketName 'jfgdb'
+  source file(rootOutputLibs)
+  prefix "sharedlibraries/${project.version}/"
+}
+
+task createVersionPropertyFile << {
+    def versionProp = new java.util.Properties()
+    versionProp.setProperty("version", project.version)
+    versionProp.save(new FileOutputStream(new File(project.buildDir, "resources/main/fgdbversion.properties")), "jfgdbapi version")
+}
+
+syncBinariesObjects.dependsOn copySharedLibsInResources
+compileJava.dependsOn copySharedLibsInResources
+compileJava.dependsOn createVersionPropertyFile
 

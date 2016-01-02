@@ -25,7 +25,7 @@
 
   distributions {
         main {
-             baseName = "FGDBLibraaries"
+             baseName = "FGDBLibraries"
              contents {
                         from { 'build/binaries/fGDBJNIWrapperSharedLibrary' }
                     }
@@ -81,7 +81,6 @@
      
                                 "msvcrt.lib", "oldnames.lib", "libcpmt.lib",
                                 "FileGDBAPI.lib"
-                              //  "/MACHINE:" + (targetPlatform.name == "x64"?"x64":"IX86")
 
 
                     } else {
