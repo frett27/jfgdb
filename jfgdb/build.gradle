@@ -21,6 +21,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
 if (System.getProperty("java.class.version") >= "52") {
     apply plugin: "jp.classmethod.aws.s3"
 
@@ -40,22 +42,30 @@ compileJava {
 repositories {
 	mavenLocal()
 	maven { url "http://repo.maven.apache.org/maven2" }
+    maven {
+        name "s3snapshots"
+        url "s3://jfgdb/maven2"
+        if (project.hasProperty('s3accesskey') && project.hasProperty('s3accesskeySecret')) {
+            credentials(AwsCredentials) {
+                accessKey s3accesskey
+                secretKey s3accesskeySecret
+            }
+        }
+    }
+
 }
 
-
-uploadArchives {
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        } 
+    }
     repositories {
-            maven { 
-                    url "s3://jfgdb/maven2"
-                    if (project.hasProperty('s3accesskey') && project.hasProperty('s3accesskeySecret')) {
-                        credentials(AwsCredentials) {
-                            accessKey s3accesskey
-                            secretKey s3accesskeySecret
-                        }
-                    }
-            }
+        add project.repositories.s3snapshots
     }
 }
+
 dependencies {
 	compile group: 'com.esri.geometry', name: 'esri-geometry-api', version:'1.2.1'
 	compile group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version:'2.5.0'
