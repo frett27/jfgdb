@@ -11,7 +11,9 @@ buildscript {
     maven { url "https://plugins.gradle.org/m2/" }
   }
   dependencies {
-    classpath "jp.classmethod.aws:gradle-aws-plugin:0.+"
+    if (System.getProperty("java.class.version") >= "52") {
+        classpath "jp.classmethod.aws:gradle-aws-plugin:0.+"
+    }
   }
 }
 
@@ -19,7 +21,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
-if (System.getProperty("java.class.version") > "51") {
+if (System.getProperty("java.class.version") >= "52") {
     apply plugin: "jp.classmethod.aws.s3"
 
     aws {
@@ -68,7 +70,7 @@ task copySharedLibsInResources(type:Copy) {
    }
 
 }
-if (System.getProperty("java.class.version") > "51") {
+if (System.getProperty("java.class.version") >= "52") {
     task syncBinariesObjects(type: jp.classmethod.aws.gradle.s3.SyncTask) {
       bucketName 'jfgdb'
       source file(rootOutputLibs)
