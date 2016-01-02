@@ -2,7 +2,7 @@
 
 FileGeodatabase (GDB) is a very efficient file format for storing GIS Data.
 
-This package provide a java library to use the ESRI FileGeodatabaseAPI (1.3).
+This package provide a java library to use the ESRI FileGeodatabaseAPI (1.4).
 
 More informations on the FileGeodatabase API can be found here : [http://www.esri.com/software/arcgis/geodatabase/interoperability](http://www.esri.com/software/arcgis/geodatabase/interoperability)
 
