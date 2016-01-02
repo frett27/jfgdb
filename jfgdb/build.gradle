@@ -60,10 +60,18 @@ task copySharedLibsInResources(type:Copy) {
    include("*.*")
    into(outputlibsdir)
    assert  System.getenv("ESRI_FILE_GDB_HOME") != null 
+   
    from( System.getenv("ESRI_FILE_GDB_HOME") + "/bin64")
    include("*")
    exclude("*.pdb")
    into(outputlibsdir)     
+
+   from( System.getenv("ESRI_FILE_GDB_HOME") + "/lib")
+   include("*.so")
+   into(outputlibsdir)     
+
+
+
    doLast {
         String l = (outputlibsdir.listFiles().collect { it.name }).join(",")
         new File(outputlibsdir, "files").newWriter().write(l) 
