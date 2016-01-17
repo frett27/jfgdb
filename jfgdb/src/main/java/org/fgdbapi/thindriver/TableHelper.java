@@ -108,7 +108,8 @@ public class TableHelper {
 
 
 		// to be adjusted
-		th.dataElement.setCLSID("{52353152-891A-11D0-BEC6-00805F7C4268}");
+		th.dataElement.setCLSID("{7A566981-C114-11D2-8A28-006097AFF44E}");
+						
 
 		th.dataElement.setModelName(name);
 		th.dataElement.setAliasName(name);
