@@ -35,12 +35,11 @@ public class SharedLibrariesInitializer {
 			} else {
 				System.out.println("write " + filename);
 				try {
-					File outputFile = new File(
-							outputDir, filename);
-					
+					File outputFile = new File(outputDir, filename);
+
 					if (outputFile.exists())
 						continue;
-					
+
 					FileOutputStream fos = new FileOutputStream(outputFile);
 					try {
 						byte[] buffer = new byte[1024];
@@ -62,6 +61,50 @@ public class SharedLibrariesInitializer {
 
 	}
 
+	private static void uncompressFile(String resourcePath, String filename,
+			File outputDir) throws Exception {
+		assert resourcePath != null;
+		assert !resourcePath.endsWith("/");
+
+		if (filename == null)
+			return;
+
+		String basePath = resourcePath.substring(0,resourcePath.lastIndexOf("/"));
+		assert !basePath.endsWith("/");
+		
+		String libraryResourcePath = basePath + "/" + filename;
+		InputStream is = SharedLibrariesInitializer.class
+				.getResourceAsStream(libraryResourcePath);
+		if (is == null)
+			throw new Exception("resource " + libraryResourcePath + " not found");
+
+		System.out.println("write " + filename);
+		try {
+			File outputFile = new File(outputDir, filename);
+
+			if (outputFile.exists())
+				return;
+
+			FileOutputStream fos = new FileOutputStream(outputFile);
+			try {
+				byte[] buffer = new byte[1024];
+				int cpt = 0;
+				while ((cpt = is.read(buffer)) != -1) {
+					fos.write(buffer, 0, cpt);
+				}
+
+			} finally {
+				fos.close();
+				is.close();
+			}
+		} catch (IOException ex) {
+			System.err.println("could not write file " + filename);
+			ex.printStackTrace(System.err);
+			throw ex;
+		}
+
+	}
+
 	public static void initLibraries() {
 
 		if (initialized)
@@ -70,7 +113,7 @@ public class SharedLibrariesInitializer {
 		synchronized (SharedLibrariesInitializer.class) {
 			if (initialized)
 				return;
-			
+
 			System.out.println("initialize the shared libraries");
 
 			File tmpFile = new File(System.getProperty("java.io.tmpdir"));
@@ -104,13 +147,14 @@ public class SharedLibrariesInitializer {
 				throw new RuntimeException(
 						"fgdbversion.properties does not contain version key, incorrect build");
 
-			String resourcesFiles = "/sharedlibraries/" + osName + "/" + osArch
-					+ "/files";
+			String resourcesFilesPath = "/sharedlibraries/" + version + "/"
+					+ osName + "/" + osArch + "/files";
 			InputStream resourceAsStream = SharedLibrariesInitializer.class
-					.getResourceAsStream(resourcesFiles);
+					.getResourceAsStream(resourcesFilesPath);
 			if (resourceAsStream == null)
 				throw new RuntimeException(
-						"architecture is not supported yet : " + resourcesFiles);
+						"architecture is not supported yet : "
+								+ resourcesFilesPath);
 			try {
 				InputStreamReader inputStreamReader = new InputStreamReader(
 						resourceAsStream, "UTF-8");
@@ -122,12 +166,17 @@ public class SharedLibrariesInitializer {
 				File outputDir = new File(tmpFile, "fgdbsharedlibs/" + version);
 				outputDir.mkdirs();
 				String[] files = sb.toString().split(",");
-				uncompressFiles(resourcesFiles, files, outputDir);
-				String pathSeparator = System.getProperty("path.separator");
-				System.setProperty(
-						"java.library.path",
-						System.getProperty("java.library.path")
-								+ pathSeparator + outputDir.getAbsolutePath());
+				for (String filename : files) {
+					uncompressFile(resourcesFilesPath, filename, outputDir);
+
+					if (filename.endsWith(".dll")) {
+						String loadingDll = outputDir + "\\"
+								+ filename;
+						System.out.println("loading dll :" + loadingDll);
+						System.load(loadingDll);
+					}
+
+				}
 
 			} catch (Exception ex) {
 				throw new RuntimeException(ex.getMessage(), ex);

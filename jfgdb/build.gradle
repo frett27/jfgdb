@@ -70,6 +70,7 @@ def rootOutputLibs = new File(project.buildDir , "/resources/main/sharedlibrarie
 def outputlibsdir = new File(rootOutputLibs, "${System.getProperty('os.name')}/${System.getProperty('os.arch')}")
 
 task copySharedLibsInResources(type:Copy) {
+	
    from( "../nativewrapper/build/binaries/fGDBJNIWrapperSharedLibrary")
    include("*.*")
    into(outputlibsdir)
@@ -85,14 +86,19 @@ task copySharedLibsInResources(type:Copy) {
    into(outputlibsdir)     
 
 
+    /*
+        we can't do it automatically, must be manual to solve
+        dll loading dependencies
 
    doLast {
         String l = (outputlibsdir.listFiles().collect { it.name }).join(",")
         new File(outputlibsdir, "files").newWriter().write(l) 
    }
+   */
 
 }
 if (System.getProperty("java.class.version") >= "52") {
+	// sync only available on java 8
     task syncBinariesObjects(type: jp.classmethod.aws.gradle.s3.SyncTask) {
       bucketName 'jfgdb'
       source file(rootOutputLibs)
