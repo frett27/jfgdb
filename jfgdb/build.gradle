@@ -66,26 +66,49 @@ dependencies {
 ////////////////////////////////////////////////////////////////////////
 // binaries management - sync binaries into S3 folder - download all libraries from S3
 
-def rootOutputLibs = new File(project.buildDir , "/resources/main/sharedlibraries/" + project.version)
+
+
+def rootMainResources = new File(project.buildDir , "/resources/main")
+def rootOutputLibs = new File(rootMainResources, "sharedlibraries/" + project.version)
 def outputlibsdir = new File(rootOutputLibs, "${System.getProperty('os.name')}/${System.getProperty('os.arch')}")
+println "Output libs dir :$outputlibsdir"
+if (!outputlibsdir.exists()) 
+{
+    outputlibsdir.mkdirs()
+}
 
-task copySharedLibsInResources(type:Copy) {
+task copySharedLibsInResources << {
 	
-   from( "../nativewrapper/build/binaries/fGDBJNIWrapperSharedLibrary")
-   include("*.*")
-   into(outputlibsdir)
+   copy { 
+       into(outputlibsdir)
+       from( "../nativewrapper/build/binaries/fGDBJNIWrapperSharedLibrary") 
+           include("FGDB*.dll")
+   }
    assert  System.getenv("ESRI_FILE_GDB_HOME") != null 
+   assert  new File(System.getenv("ESRI_FILE_GDB_HOME")).exists()
    
-   from( System.getenv("ESRI_FILE_GDB_HOME") + "/bin64")
-   include("*")
-   exclude("*.pdb")
+   copy {
+       into(outputlibsdir)     
+       from( new File(System.getenv("ESRI_FILE_GDB_HOME") , "bin64")) 
+           include("FileGDBAPI.dll")
+           exclude("*.pdb")
+           exclude("*D.dll")
+       
+   }
+
+   copy {
    into(outputlibsdir)     
+   from( System.getenv("ESRI_FILE_GDB_HOME") + "/lib") 
+       include("*.so")
+   
+   }
 
-   from( System.getenv("ESRI_FILE_GDB_HOME") + "/lib")
-   include("*.so")
-   into(outputlibsdir)     
-
-
+   copy {
+    into(rootMainResources)     
+    from ("src/main/resources")  
+        include("**/*/files")
+    
+   }
     /*
         we can't do it automatically, must be manual to solve
         dll loading dependencies
