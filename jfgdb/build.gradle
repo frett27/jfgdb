@@ -90,6 +90,7 @@ task copySharedLibsInResources << {
        into(outputlibsdir)
        from( "../nativewrapper/build/binaries/fGDBJNIWrapperSharedLibrary") 
            include("FGDB*.dll")
+           include("*.so")
    }
    assert  System.getenv("ESRI_FILE_GDB_HOME") != null 
    assert  new File(System.getenv("ESRI_FILE_GDB_HOME")).exists()
