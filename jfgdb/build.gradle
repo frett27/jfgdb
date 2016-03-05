@@ -1,3 +1,7 @@
+import com.amazonaws.services.s3.transfer.*
+import com.amazonaws.auth.*
+import com.amazonaws.events.*
+
 
 /*
  Java FileGeodatabase Thin driver
@@ -13,7 +17,9 @@ buildscript {
   dependencies {
     if (System.getProperty("java.class.version") >= "52") {
         classpath "jp.classmethod.aws:gradle-aws-plugin:0.+"
+       
     }
+	classpath 'com.amazonaws:aws-java-sdk:1.10.56'
   }
 }
 
@@ -28,6 +34,7 @@ if (System.getProperty("java.class.version") >= "52") {
       profileName = 'default'
       region = 'Ireland'
     }
+
 }
 
 compileJava {
@@ -128,7 +135,35 @@ if (System.getProperty("java.class.version") >= "52") {
       prefix "sharedlibraries/${project.version}/"
     }
     syncBinariesObjects.dependsOn copySharedLibsInResources
+
+   
 }
+
+
+task transfertPreparedBinaries() << {
+	
+				DefaultAWSCredentialsProviderChain credentialProviderChain = new DefaultAWSCredentialsProviderChain();
+				TransferManager tx = new TransferManager(
+							   credentialProviderChain.getCredentials());
+	
+				def r = tx.downloadDirectory("jfgdb","sharedlibraries/${project.version}", rootMainResources)
+				print("downloading .");
+				r.addProgressListener( [
+					"progressChanged" : { e->
+						print(".");
+					}
+				] as com.amazonaws.event.ProgressListener);
+				
+				r.waitForCompletion()
+				println ""
+				tx.shutdownNow()
+	
+		}
+	
+		processResources.dependsOn transfertPreparedBinaries
+	
+	
+
 
 task createVersionPropertyFile << {
     def versionProp = new java.util.Properties()
