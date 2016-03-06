@@ -5,7 +5,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+
+import com.sun.jna.Library;
+import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
+import com.sun.jna.Platform;
 
 /**
  * init and uncompress shared libraries
@@ -16,6 +24,21 @@ import java.util.Properties;
 public class SharedLibrariesInitializer {
 
 	static boolean initialized = false;
+
+//	static LibC libc = null;
+//
+//	static DL libdl = null;
+//
+//	public interface LibC extends Library {
+//
+//		public int setenv(String name, String value, int overwrite);
+//
+//		public int unsetenv(String name);
+//	}
+//
+//	public interface DL extends Library {
+//		public int dlopen(String path, int flags);
+//	}
 
 	private static void uncompressFiles(String resourcePath,
 			String[] listFiles, File outputDir) {
@@ -69,22 +92,23 @@ public class SharedLibrariesInitializer {
 		if (filename == null)
 			return;
 
-		String basePath = resourcePath.substring(0,resourcePath.lastIndexOf("/"));
+		String basePath = resourcePath.substring(0,
+				resourcePath.lastIndexOf("/"));
 		assert !basePath.endsWith("/");
-		
+
 		String libraryResourcePath = basePath + "/" + filename;
 		InputStream is = SharedLibrariesInitializer.class
 				.getResourceAsStream(libraryResourcePath);
 		if (is == null)
-			throw new Exception("resource " + libraryResourcePath + " not found");
+			throw new Exception("resource \"" + libraryResourcePath
+					+ "\" not found");
 
-		
 		try {
 			File outputFile = new File(outputDir, filename);
 
 			if (outputFile.exists())
 				return;
-			
+
 			System.out.println("write " + filename);
 			FileOutputStream fos = new FileOutputStream(outputFile);
 			try {
@@ -167,16 +191,111 @@ public class SharedLibrariesInitializer {
 				File outputDir = new File(tmpFile, "fgdbsharedlibs/" + version);
 				outputDir.mkdirs();
 				String[] files = sb.toString().split(",");
+
+				String wrapperLibraryPath = null;
+
 				for (String filename : files) {
+
+					filename = sanitizeFileName(filename);
+					if (filename == null || filename.isEmpty())
+						continue;
+
+					filename = filename.trim();
+
+					System.out.println("checking " + filename);
+
+					String libPath = System.getProperty("java.library.path")
+							+ System.getProperty("path.separator")
+							+ outputDir.getAbsolutePath();
+
+					System.setProperty("jna.library.path", libPath);
+
 					uncompressFile(resourcesFilesPath, filename, outputDir);
 
-					if (filename.endsWith(".dll") || filename.endsWith(".so")) {
-						String loadingDll = new File( outputDir,  filename).getAbsolutePath();
-						System.out.println("loading sharedlibrary :" + loadingDll);
-						System.load(loadingDll);
-						System.out.println("successfully loaded");
+					if (filename.toLowerCase().contains("wrapper")) {
+						String loadingDll = new File(outputDir, filename)
+								.getAbsolutePath();
+						wrapperLibraryPath = loadingDll;
 					}
 
+					// if (filename.endsWith(".dll") ||
+					// filename.endsWith(".so")) { // sanity
+					//
+					// String loadingDll = new File(outputDir, filename)
+					// .getAbsolutePath();
+					// System.out.println("loading sharedlibrary :"
+					// + loadingDll);
+					//
+					// {
+					//
+					// // System.load(loadingDll); // don't work with
+					// // dependencies
+					//
+					// Map options = Collections.EMPTY_MAP;
+					// if (Platform.isLinux()) {
+					//
+					// if (libc == null) {
+					// System.out
+					// .println("setting LD_LIBRARY_PATH to "
+					// + outputDir
+					// .getAbsolutePath());
+					// libc = (LibC) Native.loadLibrary("c",
+					// LibC.class);
+					//
+					// int status = libc.setenv("LD_LIBRARY_PATH",
+					// outputDir.getAbsolutePath(), 1);
+					//
+					// System.out.println("setenv returned "
+					// + status);
+					//
+					// }
+					//
+					// if (libdl == null) {
+					// libdl = (DL) Native.loadLibrary("c",
+					// DL.class);
+					// }
+					//
+					// int returned = libdl.dlopen(
+					// outputDir.getAbsolutePath(),
+					// 0x0100 | 0x00002);
+					// System.out.println("dlopen returned "
+					// + returned);
+					//
+					// // } else {
+					//
+					//
+					// }
+					// }
+					//
+					// // if (filename.toLowerCase().contains("wrapper")) {
+					// // System.loadLibrary("FGDBJNIWrapper");
+					// // }
+					//
+					// System.out.println("successfully loaded");
+					// }
+
+				}
+
+				if (wrapperLibraryPath == null) {
+					throw new Exception(
+							"wrapper library has not been extracted");
+				}
+
+				try {
+					System.load(wrapperLibraryPath);
+				} catch (Exception ex) {
+					System.out.println("LIBRARY " + wrapperLibraryPath
+							+ " cannot be loaded");
+					ex.printStackTrace();
+
+					if (Platform.isLinux()) {
+						System.out
+								.println("please launch \"export LD_LIBRARY_PATH="
+										+ new File(wrapperLibraryPath)
+												.getParentFile()
+												.getAbsolutePath()
+										+ "\" before running the program");
+					}
 				}
 
 			} catch (Exception ex) {
@@ -186,4 +305,26 @@ public class SharedLibrariesInitializer {
 
 	}
 
+	private static String sanitizeFileName(String filename) {
+
+		if (filename == null)
+			return null;
+
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < filename.length(); i++) {
+			char c = filename.charAt(i);
+			switch (c) {
+			case '\n':
+			case '\t':
+			case '\r':
+				continue;
+			default:
+				break;
+			}
+			sb.append(c);
+		}
+
+		return sb.toString();
+
+	}
 }
