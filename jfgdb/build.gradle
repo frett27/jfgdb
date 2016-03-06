@@ -20,6 +20,7 @@ buildscript {
        
     }
 	classpath 'com.amazonaws:aws-java-sdk:1.10.56'
+	classpath 'org.ini4j:ini4j:0.5.1'
   }
 }
 
@@ -27,6 +28,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
 if (System.getProperty("java.class.version") >= "52") {
     apply plugin: "jp.classmethod.aws.s3"
 
@@ -50,19 +53,41 @@ repositories {
 }
 
 
-uploadArchives {
-    repositories {
-            maven { 
-                    url "s3://jfgdb/maven2"
-                    if (project.hasProperty('s3accesskey') && project.hasProperty('s3accesskeySecret')) {
-                        credentials(AwsCredentials) {
-                            accessKey s3accesskey
-                            secretKey s3accesskeySecret
-                        }
-                    }
-            }
-    }
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
+	repositories {
+		maven {
+				url "s3://jfgdb/maven2"
+				
+				
+				def f = new File(System.getProperty("user.home"), ".aws")
+				def credentialfile = new File(f, "credentials")
+				if (credentialfile.exists()) {
+					org.ini4j.Ini ini = new org.ini4j.Ini(credentialfile);
+					java.util.prefs.Preferences prefs = new org.ini4j.IniPreferences(ini);
+					def id = prefs.node("default").get("aws_access_key_id", null)
+					def sk = prefs.node("default").get("aws_secret_access_key", null)
+					
+					if (id != null && sk != null) {
+						System.out.println("access key read")
+						credentials(AwsCredentials) {
+							accessKey id
+							secretKey sk
+						}
+					} else 
+					{
+						System.out.println("no access keys read")
+					}
+				}
+				
+		}
+	}
 }
+
 dependencies {
 	compile group: 'com.esri.geometry', name: 'esri-geometry-api', version:'1.2.1'
 	compile group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version:'2.5.0'
