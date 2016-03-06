@@ -78,13 +78,14 @@ public class SharedLibrariesInitializer {
 		if (is == null)
 			throw new Exception("resource " + libraryResourcePath + " not found");
 
-		System.out.println("write " + filename);
+		
 		try {
 			File outputFile = new File(outputDir, filename);
 
 			if (outputFile.exists())
 				return;
-
+			
+			System.out.println("write " + filename);
 			FileOutputStream fos = new FileOutputStream(outputFile);
 			try {
 				byte[] buffer = new byte[1024];
@@ -169,11 +170,11 @@ public class SharedLibrariesInitializer {
 				for (String filename : files) {
 					uncompressFile(resourcesFilesPath, filename, outputDir);
 
-					if (filename.endsWith(".dll")) {
-						String loadingDll = outputDir + "\\"
-								+ filename;
-						System.out.println("loading dll :" + loadingDll);
+					if (filename.endsWith(".dll") || filename.endsWith(".so")) {
+						String loadingDll = new File( outputDir,  filename).getAbsolutePath();
+						System.out.println("loading sharedlibrary :" + loadingDll);
 						System.load(loadingDll);
+						System.out.println("successfully loaded");
 					}
 
 				}
