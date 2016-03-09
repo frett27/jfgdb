@@ -1,7 +1,7 @@
 import com.amazonaws.services.s3.transfer.*
 import com.amazonaws.auth.*
 import com.amazonaws.events.*
-
+import js.classmethod.aws.gradle.s3.*
 
 /*
  Java FileGeodatabase Thin driver
@@ -21,6 +21,7 @@ buildscript {
     }
 	classpath 'com.amazonaws:aws-java-sdk:1.10.56'
 	classpath 'org.ini4j:ini4j:0.5.1'
+	classpath 'net.java.dev.jna:jna:4.2.1'
   }
 }
 
@@ -103,7 +104,9 @@ dependencies {
 
 def rootMainResources = new File(project.buildDir , "/resources/main")
 def rootOutputLibs = new File(rootMainResources, "sharedlibraries/" + project.version)
-def outputlibsdir = new File(rootOutputLibs, "${System.getProperty('os.name')}/${System.getProperty('os.arch')}")
+def outputlibsdir = new File(rootOutputLibs, 
+			"${com.sun.jna.Platform.RESOURCE_PREFIX}")
+
 println "Output libs dir :$outputlibsdir"
 if (!outputlibsdir.exists()) 
 {
@@ -155,6 +158,7 @@ task copySharedLibsInResources << {
 
 }
 if (System.getProperty("java.class.version") >= "52") {
+	
 	// sync only available on java 8
     task syncBinariesObjects(type: jp.classmethod.aws.gradle.s3.SyncTask) {
       bucketName 'jfgdb'

@@ -148,7 +148,7 @@ public class SharedLibrariesInitializer {
 			String osName = System.getProperty("os.name");
 			System.out.println("OS :" + osName);
 
-			String osArch = System.getProperty("os.arch");
+			String osArch = Platform.RESOURCE_PREFIX;
 			System.out.println("Architecture :" + osArch);
 
 			InputStream fgdbversionProperties = SharedLibrariesInitializer.class
@@ -218,61 +218,65 @@ public class SharedLibrariesInitializer {
 						wrapperLibraryPath = loadingDll;
 					}
 
-					// if (filename.endsWith(".dll") ||
-					// filename.endsWith(".so")) { // sanity
-					//
-					// String loadingDll = new File(outputDir, filename)
-					// .getAbsolutePath();
-					// System.out.println("loading sharedlibrary :"
-					// + loadingDll);
-					//
-					// {
-					//
-					// // System.load(loadingDll); // don't work with
-					// // dependencies
-					//
-					// Map options = Collections.EMPTY_MAP;
-					// if (Platform.isLinux()) {
-					//
-					// if (libc == null) {
-					// System.out
-					// .println("setting LD_LIBRARY_PATH to "
-					// + outputDir
-					// .getAbsolutePath());
-					// libc = (LibC) Native.loadLibrary("c",
-					// LibC.class);
-					//
-					// int status = libc.setenv("LD_LIBRARY_PATH",
-					// outputDir.getAbsolutePath(), 1);
-					//
-					// System.out.println("setenv returned "
-					// + status);
-					//
-					// }
-					//
-					// if (libdl == null) {
-					// libdl = (DL) Native.loadLibrary("c",
-					// DL.class);
-					// }
-					//
-					// int returned = libdl.dlopen(
-					// outputDir.getAbsolutePath(),
-					// 0x0100 | 0x00002);
-					// System.out.println("dlopen returned "
-					// + returned);
-					//
-					// // } else {
-					//
-					//
-					// }
-					// }
-					//
-					// // if (filename.toLowerCase().contains("wrapper")) {
-					// // System.loadLibrary("FGDBJNIWrapper");
-					// // }
-					//
-					// System.out.println("successfully loaded");
-					// }
+					if (filename.endsWith(".dll") || filename.endsWith(".so")) { // sanity
+
+						String loadingDll = new File(outputDir, filename)
+								.getAbsolutePath();
+						System.out.println("loading sharedlibrary :"
+								+ loadingDll);
+						
+						if (Platform.isWindows())
+						{
+							// load the library
+							NativeLibrary.getInstance(loadingDll);
+						}
+
+//						{
+//
+//							// System.load(loadingDll); // don't work with
+//							// dependencies
+//
+//							Map options = Collections.EMPTY_MAP;
+//							if (Platform.isLinux()) {
+//
+//								if (libc == null) {
+//									System.out
+//											.println("setting LD_LIBRARY_PATH to "
+//													+ outputDir
+//															.getAbsolutePath());
+//									libc = (LibC) Native.loadLibrary("c",
+//											LibC.class);
+//
+//									int status = libc.setenv("LD_LIBRARY_PATH",
+//											outputDir.getAbsolutePath(), 1);
+//
+//									System.out.println("setenv returned "
+//											+ status);
+//
+//								}
+//
+//								if (libdl == null) {
+//									libdl = (DL) Native.loadLibrary("c",
+//											DL.class);
+//								}
+//
+//								int returned = libdl.dlopen(
+//										outputDir.getAbsolutePath(),
+//										0x0100 | 0x00002);
+//								System.out.println("dlopen returned "
+//										+ returned);
+//
+//								// } else {
+//
+//							}
+//						}
+
+						// if (filename.toLowerCase().contains("wrapper")) {
+						// System.loadLibrary("FGDBJNIWrapper");
+						// }
+
+						System.out.println("successfully loaded");
+					}
 
 				}
 
