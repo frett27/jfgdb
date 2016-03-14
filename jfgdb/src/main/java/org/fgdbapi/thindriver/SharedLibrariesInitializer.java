@@ -25,21 +25,6 @@ public class SharedLibrariesInitializer {
 
 	static boolean initialized = false;
 
-//	static LibC libc = null;
-//
-//	static DL libdl = null;
-//
-//	public interface LibC extends Library {
-//
-//		public int setenv(String name, String value, int overwrite);
-//
-//		public int unsetenv(String name);
-//	}
-//
-//	public interface DL extends Library {
-//		public int dlopen(String path, int flags);
-//	}
-
 	private static void uncompressFiles(String resourcePath,
 			String[] listFiles, File outputDir) {
 		assert resourcePath != null;
@@ -173,7 +158,7 @@ public class SharedLibrariesInitializer {
 						"fgdbversion.properties does not contain version key, incorrect build");
 
 			String resourcesFilesPath = "/sharedlibraries/" + version + "/"
-					+ osName + "/" + osArch + "/files";
+					+ "/" + osArch + "/files";
 			InputStream resourceAsStream = SharedLibrariesInitializer.class
 					.getResourceAsStream(resourcesFilesPath);
 			if (resourceAsStream == null)
