@@ -1,8 +1,12 @@
 
 
 allprojects  {
+	apply plugin: 'java'
         group = 'org.jfgdb'
         version = fgdbversion
+	targetCompatibility = 1.7
+	sourceCompatibility = 1.7
+
 }
 
 
