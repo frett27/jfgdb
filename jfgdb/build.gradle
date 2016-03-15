@@ -113,6 +113,9 @@ if (!outputlibsdir.exists())
     outputlibsdir.mkdirs()
 }
 
+
+if (System.getenv("ESRI_FILE_GDB_HOME") != null) {
+
 task copySharedLibsInResources << {
 	
    copy { 
@@ -157,6 +160,10 @@ task copySharedLibsInResources << {
    */
 
 }
+
+}
+
+
 if (System.getProperty("java.class.version") >= "52") {
 	
 	// sync only available on java 8
@@ -165,17 +172,20 @@ if (System.getProperty("java.class.version") >= "52") {
       source file(rootOutputLibs)
       prefix "sharedlibraries/${project.version}/"
     }
-    syncBinariesObjects.dependsOn copySharedLibsInResources
 
+    if (System.getenv("ESRI_FILE_GDB_HOME") != null) {
+    syncBinariesObjects.dependsOn copySharedLibsInResources
+	}
    
 }
 
 
 task transfertPreparedBinaries() << {
 	
-				DefaultAWSCredentialsProviderChain credentialProviderChain = new DefaultAWSCredentialsProviderChain();
-				TransferManager tx = new TransferManager(
+				 DefaultAWSCredentialsProviderChain credentialProviderChain = new DefaultAWSCredentialsProviderChain();
+				 TransferManager tx = new TransferManager(
 							   credentialProviderChain.getCredentials());
+
 	
 				def r = tx.downloadDirectory("jfgdb","sharedlibraries/${project.version}", rootMainResources)
 				print("downloading .");
@@ -204,6 +214,10 @@ task createVersionPropertyFile << {
     versionProp.save(new FileOutputStream(new File(resourcemain,"fgdbversion.properties")), "jfgdbapi version")
 }
 
-compileJava.dependsOn copySharedLibsInResources
+if (System.getenv("ESRI_FILE_GDB_HOME") != null) {
+	compileJava.dependsOn copySharedLibsInResources
+
+}
+
 compileJava.dependsOn createVersionPropertyFile
 

@@ -30,5 +30,5 @@ apply plugin:'distribution'
     }
 
 // we must have the binaries compiled for the java wrapper
-tasks.getByPath(':jfgdb:compileJava').dependsOn(tasks.getByPath(":nativewrapper:build"))
+//tasks.getByPath(':jfgdb:compileJava').dependsOn(tasks.getByPath(":nativewrapper:build"))
 
