@@ -157,7 +157,7 @@ public class SharedLibrariesInitializer {
 				throw new RuntimeException(
 						"fgdbversion.properties does not contain version key, incorrect build");
 
-			String resourcesFilesPath = "/sharedlibraries/" + version + "/"
+			String resourcesFilesPath = "/sharedlibraries/" + version 
 					+ "/" + osArch + "/files";
 			InputStream resourceAsStream = SharedLibrariesInitializer.class
 					.getResourceAsStream(resourcesFilesPath);
