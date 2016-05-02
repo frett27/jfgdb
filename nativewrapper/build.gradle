@@ -16,7 +16,7 @@
 
 def JAVA_HOME;
 
-task checkEnv << {
+// task checkEnv << {
 
     if (!System.getenv('ESRI_FILE_GDB_HOME')) throw new Exception("environment variable ESRI_FILE_GDB_HOME must be defined")
 
@@ -28,7 +28,7 @@ task checkEnv << {
     if (!JAVA_HOME.exists()) throw Exception("folder " + JAVA_HOME + " does not exists");
 
 
-}
+// }
 
   distributions {
         main {
@@ -64,7 +64,6 @@ task checkEnv << {
                 // targetPlatform "x86" // only available for windows
                  targetPlatform "x64"
 
-                binaries.all {
 
                     sources {
                         cpp {
@@ -75,6 +74,7 @@ task checkEnv << {
                         }
                     }
 
+                binaries.all {
                     if (toolChain in VisualCpp) {
                     
                                cppCompiler.args "/Zi", "-I" + new File(ESRI_FILE_GDB_HOME, "include").getAbsolutePath(),
