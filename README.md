@@ -25,7 +25,11 @@ the result is in `build/distributions`
 
 #How to use
 
-2 - Place the given native FGDBJNIWrapper library, and FileGeodatabase API DLLs in the PATH or LD\_LIBRARY\_PATH (for linux)
+##Windows :
+   Just put the maven reference to the jfgdb, it will decompress in the tmp the proper DLLS 
 
-3 - Use the jar file in you project
+##Linux
+   reference the jar in the project, 	
+   Due to dlopen call that don't permit to load related .so library next to the main .so, you will need to place the given native FGDBJNIWrapper library, and FileGeodatabase API DLLs in the PATH or LD\_LIBRARY\_PATH (for linux)
+
 
