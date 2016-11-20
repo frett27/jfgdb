@@ -12,7 +12,7 @@ If you've not read the prerequist:
 - install the redist VC++ 2012 x64 on windows x64
 - put the extracted libraries folder in the LD_LIBRARY_PATH env variable on linux x64
 
-
+ 
 
 to compile examples :
 
