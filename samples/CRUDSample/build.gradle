@@ -1,0 +1,19 @@
+// Apply the java plugin to add support for Java
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    jcenter()
+}
+
+repositories {
+    maven { url "http://jfgdb.s3-website-eu-west-1.amazonaws.com/maven2"}
+}
+
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    // file geodatabase dependency
+	compile group: 'org.jfgdb', name: 'jfgdb', version:'0.1.4'
+}
