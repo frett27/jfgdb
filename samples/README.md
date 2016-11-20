@@ -12,7 +12,11 @@ to compile examples :
 gradlew build
 ```
 
+launch examples  :
 
+```
+gradlew --rerun-tasks test -i
+```
 
 ## CRUD Example
 

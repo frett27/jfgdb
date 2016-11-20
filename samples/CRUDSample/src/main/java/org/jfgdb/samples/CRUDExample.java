@@ -15,7 +15,7 @@ import com.esri.core.geometry.Point;
 
 public class CRUDExample {
 
-	public static void main(String[] args) throws Exception {
+	public static void createGeodataBaseAndTable() throws Exception {
 		SharedLibrariesInitializer.initLibraries();
 
 		System.out.println("java.library.path :" + System.getProperty("java.library.path"));
@@ -39,11 +39,11 @@ public class CRUDExample {
 		try {
 			t.setLoadOnlyMode(true);
 			t.setWriteLock();
-			
+
 			System.out.println("table created, inserting geometries");
 			long start = System.currentTimeMillis();
 			for (int i = 0; i < 1000000; i++) {
-				if (i%100000 == 0) {
+				if (i % 100000 == 0) {
 					System.out.println(" " + i + " objects inserted");
 				}
 				Row r = t.createRowObject();
@@ -52,20 +52,23 @@ public class CRUDExample {
 				r.setInteger("integerf", (int) (Math.random() * 1000));
 				t.insertRow(r);
 			}
-			
-			
+
 			long time = (System.currentTimeMillis() - start);
 			System.out.println("1000000 points created in " + time + " ms : Troughtput " + (1000000.0 / (time / 1000.0))
 					+ " objects / s");
-			
+
 			t.freeWriteLock();
-			
+
 		} finally {
 			System.out.println("closing the table, and constructing the spatial index");
 			g.closeTable(t);
 		}
 		System.out.println("Done");
 
+	}
+
+	public static void main(String[] args) throws Exception {
+		createGeodataBaseAndTable();
 	}
 
 }

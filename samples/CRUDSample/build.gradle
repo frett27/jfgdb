@@ -16,4 +16,5 @@ repositories {
 dependencies {
     // file geodatabase dependency
 	compile group: 'org.jfgdb', name: 'jfgdb', version:'0.1.4'
+    testCompile 'junit:junit:4.12'
 }
