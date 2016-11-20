@@ -149,6 +149,7 @@ task copySharedLibsInResources << {
         include("**/*/files")
     
    }
+
     /*
         we can't do it automatically, must be manual to solve
         dll loading dependencies

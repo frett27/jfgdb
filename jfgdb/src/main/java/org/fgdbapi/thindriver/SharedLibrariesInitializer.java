@@ -145,6 +145,8 @@ public class SharedLibrariesInitializer {
 			String version = null;
 			Properties properties = new Properties();
 			try {
+				// load the fgdb properties
+				// and version
 				properties.load(fgdbversionProperties);
 				version = properties.getProperty("version");
 
@@ -153,12 +155,16 @@ public class SharedLibrariesInitializer {
 						"failed to load fgdbversion.properties :"
 								+ ex.getMessage(), ex);
 			}
-			if (version == null)
+			
+			if (version == null) {
 				throw new RuntimeException(
 						"fgdbversion.properties does not contain version key, incorrect build");
-
+			}
+			
+			// in jar, the dll are in this package
 			String resourcesFilesPath = "/sharedlibraries/" + version 
 					+ "/" + osArch + "/files";
+			// get the stream to write files
 			InputStream resourceAsStream = SharedLibrariesInitializer.class
 					.getResourceAsStream(resourcesFilesPath);
 			if (resourceAsStream == null)

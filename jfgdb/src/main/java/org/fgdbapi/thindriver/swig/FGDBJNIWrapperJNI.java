@@ -631,4 +631,5 @@ public class FGDBJNIWrapperJNI {
 	public final static native long new_Raster();
 
 	public final static native void delete_Raster(long jarg1);
+	
 }
