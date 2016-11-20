@@ -101,7 +101,6 @@ dependencies {
 // binaries management - sync binaries into S3 folder - download all libraries from S3
 
 
-
 def rootMainResources = new File(project.buildDir , "/resources/main")
 def rootOutputLibs = new File(rootMainResources, "sharedlibraries/" + project.version)
 def outputlibsdir = new File(rootOutputLibs, 
@@ -188,7 +187,7 @@ task transfertPreparedBinaries() << {
 							   credentialProviderChain.getCredentials());
 
 	
-				def r = tx.downloadDirectory("jfgdb","sharedlibraries/${project.version}", rootMainResources)
+				def r = tx.downloadDirectory("jfgdb","sharedlibraries/${project.version}/", rootMainResources)
 				print("downloading .");
 				r.addProgressListener( [
 					"progressChanged" : { e->

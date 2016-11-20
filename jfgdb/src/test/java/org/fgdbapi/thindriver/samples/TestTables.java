@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
-
 import org.fgdbapi.thindriver.TableHelper;
 import org.fgdbapi.thindriver.swig.FGDBJNIWrapper;
 import org.fgdbapi.thindriver.swig.Geodatabase;
@@ -17,133 +14,126 @@ import org.fgdbapi.thindriver.xml.EsriGeometryType;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Created by use on 13/12/2014.
- */
+/** Created by use on 13/12/2014. */
 public class TestTables {
 
-	private Geodatabase g;
-	private File gdbfile;
+  private Geodatabase g;
+  private File gdbfile;
 
-	@Before
-	public void setup() throws Exception {
+  @Before
+  public void setup() throws Exception {
 
-		File tempFolder = File.createTempFile("test", "folder");
-		tempFolder.delete();
-		tempFolder.mkdirs();
+    File tempFolder = File.createTempFile("test", "folder");
+    tempFolder.delete();
+    tempFolder.mkdirs();
 
-		gdbfile = new File(tempFolder, "fgdb.gdb");
-		g = FGDBJNIWrapper.createGeodatabase(gdbfile.getAbsolutePath());
+    gdbfile = new File(tempFolder, "fgdb.gdb");
+    g = FGDBJNIWrapper.createGeodatabase(gdbfile.getAbsolutePath());
 
-		System.out.println("database :" + gdbfile);
+    System.out.println("database :" + gdbfile);
+  }
 
-	}
+  public void tearDown() throws Exception {
+    gdbfile.delete();
+  }
 
-	public void tearDown() throws Exception {
-		gdbfile.delete();
-	}
+  @Test
+  public void testCreateTable() throws Exception {
 
-	@Test
-	public void testCreateTable() throws Exception {
+    String tableDefinition =
+        TableHelper.newTable("matable")
+            .addStringField("c1", 40)
+            .addIntegerField("i1")
+            .buildAsString();
 
-		String tableDefinition = TableHelper.newTable("matable")
-				.addStringField("c1", 40).addIntegerField("i1").buildAsString();
+    Table table = g.createTable(tableDefinition, "");
+    g.closeTable(table);
 
-		Table table = g.createTable(tableDefinition, "");
-		g.closeTable(table);
+    FGDBJNIWrapper.closeGeodatabase2(g);
+  }
 
-		FGDBJNIWrapper.closeGeodatabase2(g);
+  private String alea() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < 40; i++) {
+      sb.append((char) (Math.random() * 255));
+    }
+    return sb.toString();
+  }
 
-	}
+  ArrayList<String> l = new ArrayList<>();
 
-	private String alea() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < 40; i++) {
-			sb.append((char) (Math.random() * 255));
-		}
-		return sb.toString();
-	}
+  @Test
+  public void testCreateTableAndInsertStrings() throws Exception {
 
-	ArrayList<String> l = new ArrayList<>();
+    TableHelper tableDefinition =
+        TableHelper.newFeatureClass(
+            "matable",
+            EsriGeometryType.ESRI_GEOMETRY_POINT,
+            TableHelper.constructW84SpatialReference());
 
-	@Test
-	public void testCreateTableAndInsertStrings() throws Exception {
+    final int fields = 255;
+    for (int i = 0; i < fields; i++) {
+      tableDefinition = tableDefinition.addStringField("c" + i, fields);
+    }
 
-		
-		
-		TableHelper tableDefinition = TableHelper.newFeatureClass("matable",
-				EsriGeometryType.ESRI_GEOMETRY_POINT,
-				TableHelper.constructW84SpatialReference());
+    // .addIntegerField("i1").buildAsString();
 
-		final int fields = 255;
-		for (int i = 0; i < fields; i++) {
-			tableDefinition = tableDefinition.addStringField("c" + i, fields);
-		}
+    System.gc();
+    System.out.println(Runtime.getRuntime().maxMemory());
+    System.out.println(Runtime.getRuntime().freeMemory());
+    System.out.println("------");
 
-		// .addIntegerField("i1").buildAsString();
+    for (int i = 0; i < 10_000; i++) {
+      l.add(alea());
+    }
 
-		System.gc();
-		System.out.println(Runtime.getRuntime().maxMemory());
-		System.out.println(Runtime.getRuntime().freeMemory());
-		System.out.println("------");
+    System.gc();
+    System.out.println(Runtime.getRuntime().maxMemory());
+    System.out.println(Runtime.getRuntime().freeMemory());
+    System.out.println("------");
 
-		for (int i = 0; i < 10_000; i++) {
-			l.add(alea());
-		}
+    System.out.println(tableDefinition);
 
-		System.gc();
-		System.out.println(Runtime.getRuntime().maxMemory());
-		System.out.println(Runtime.getRuntime().freeMemory());
-		System.out.println("------");
+    String string = tableDefinition.buildAsString();
+    final Table table = g.createTable(string, "");
 
-		System.out.println(tableDefinition);
+    table.setWriteLock();
+    table.setLoadOnlyMode(true);
 
-		String string = tableDefinition.buildAsString();
-		final Table table = g.createTable(string, "");
+    ExecutorService tp = Executors.newFixedThreadPool(5);
+    for (int i = 0; i < 5; i++) {
+      tp.submit(
+          new Runnable() {
 
-		table.setWriteLock();
-		table.setLoadOnlyMode(true);
+            @Override
+            public void run() {
 
-		ExecutorService tp = Executors.newFixedThreadPool(5);
-		for (int i = 0; i < 5; i++) {
-			tp.submit(new Runnable() {
+              int cpt = 0;
 
-				@Override
-				public void run() {
+              for (int i = 0; i < 10000000; i++) {
+                synchronized (TestTables.class) {
+                  for (int j = 0; j < 500; j++) l.add(alea());
 
-					int cpt = 0;
+                  Row r = table.createRowObject();
+                  r.setString("c" + ((int) (Math.random() * fields)), alea());
 
-					for (int i = 0; i < 10000000; i++) {
-						synchronized (TestTables.class) {
-							for (int j = 0; j < 500; j++)
-								l.add(alea());
+                  if (cpt++ % 10000 == 0) System.out.println(cpt);
+                  table.insertRow(r);
+                  r.delete();
+                  for (int j = 0; j < 500; j++) l.remove(0);
+                }
+              }
+            }
+          });
+    }
 
-							Row r = table.createRowObject();
-							r.setString("c" + ((int) (Math.random() * fields)),
-									alea());
+    tp.awaitTermination(100000, TimeUnit.DAYS); // forever
 
-							if (cpt++ % 10000 == 0)
-								System.out.println(cpt);
-							table.insertRow(r);
-							r.delete();
-							for (int j = 0; j < 500; j++)
-								l.remove(0);
+    table.freeWriteLock();
+    table.setLoadOnlyMode(false);
 
-						}
-					}
-				}
-			});
-		}
+    g.closeTable(table);
 
-		tp.awaitTermination(100000, TimeUnit.DAYS); // forever
-
-		table.freeWriteLock();
-		table.setLoadOnlyMode(false);
-
-		g.closeTable(table);
-
-		FGDBJNIWrapper.closeGeodatabase2(g);
-
-	}
-
+    FGDBJNIWrapper.closeGeodatabase2(g);
+  }
 }
