@@ -19,6 +19,10 @@ public class FGDBBaseObject {
 		return Double.longBitsToDouble(l);
 	}
 
+	protected float readFloat() throws Exception {
+		long l = read(4);
+		return Float.intBitsToFloat((int)l);
+	}
 	
 	
 	protected long read(int length) throws Exception {
@@ -35,7 +39,7 @@ public class FGDBBaseObject {
 	}
 
 	protected String readStringWithSizeHeader() throws Exception {
-		int size = (int) read(1);
+		int size = (int)read(1);
 		byte[] data = new byte[size * 2];
 		if (raf.read(data, 0, size * 2) != size * 2) {
 			throw new Exception("eof encountered");
@@ -54,7 +58,7 @@ public class FGDBBaseObject {
 	
 	protected String readVarUIntString() throws Exception {
 		
-		long length = readVarUint();
+		long length = readVarUintGeom();
 		
 		byte[] content = new byte[(int)length];
 		if ((raf.read(content,0,(int)length)) != length) {
@@ -65,23 +69,23 @@ public class FGDBBaseObject {
 		return new String(content, "UTF-8");
 		
 	}
-
-	protected long readVarUint() throws Exception {
-
-		long current = 0;
-
-		int read;
-		do {
-			current = current << 7;
-			if ((read = raf.read()) == -1) {
-				throw new Exception("eof reach");
-			}
-			current = current + (read & 0x7F);
-
-		} while ((read & 0x80) != 0);
-
-		return current;
-	}
+//
+//	protected long readVarUint() throws Exception {
+//
+//		long current = 0;
+//
+//		int read;
+//		do {
+//			current = current << 7;
+//			if ((read = raf.read()) == -1) {
+//				throw new Exception("eof reach");
+//			}
+//			current = current + (read & 0x7F);
+//
+//		} while ((read & 0x80) != 0);
+//
+//		return current;
+//	}
 
 
 	protected long readVarUintGeom() throws Exception {

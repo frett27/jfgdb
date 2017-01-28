@@ -4,9 +4,11 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
-import org.fgdbapi.thindriver.swig.SpatialReference;
+import org.fgdbapi.thindriver.xml.Envelope;
+import org.fgdbapi.thindriver.xml.EnvelopeN;
 import org.fgdbapi.thindriver.xml.EsriFieldType;
 import org.fgdbapi.thindriver.xml.Field;
 import org.fgdbapi.thindriver.xml.GeographicCoordinateSystem;
@@ -15,8 +17,14 @@ import org.fgdbapi.thindriver.xml.ProjectedCoordinateSystem;
 
 public class FGDBTable extends FGDBBaseObject {
 
+	private FGDBTablex index;
+
 	public FGDBTable(File file) throws Exception {
 		super(file);
+
+		String filenamex = file.getName();
+		File tablexFile = new File(file.getParentFile(), filenamex.substring(0, filenamex.length() - 1) + "x");
+		index = new FGDBTablex(tablexFile);
 	}
 
 	int rowNumber;
@@ -27,10 +35,12 @@ public class FGDBTable extends FGDBBaseObject {
 
 	int numberOfNullableFields;
 
+	Envelope layerExtent;
+
 	public int getRowNumber() {
 		return rowNumber;
 	}
-	
+
 	@Override
 	protected void readHeader() throws Exception {
 
@@ -41,7 +51,7 @@ public class FGDBTable extends FGDBBaseObject {
 		read(4);
 
 		// int32: number of (valid) rows
-		rowNumber = (int)read(4);
+		rowNumber = (int) read(4);
 
 		// 4 bytes: varying values - unknown role (TBC : this value does have
 		// something to do with row size. A value larger than the size of the
@@ -111,7 +121,7 @@ public class FGDBTable extends FGDBBaseObject {
 			// field
 			// utf16: name of the field
 			String name = readStringWithSizeHeader();
-			System.out.println(name);
+			// System.out.println(name);
 			// ubyte: number of UTF-16 characters (not bytes) of the alias of
 			// the field. Might be 0
 			// utf16: alias of the field (ommitted if previous field is 0)
@@ -135,8 +145,10 @@ public class FGDBTable extends FGDBBaseObject {
 			switch (fieldType) {
 
 			case 1:
+			case 0:
 				// 0 = int16, 1 = int32
-				f.setType(EsriFieldType.ESRI_FIELD_TYPE_INTEGER);
+				f.setType(fieldType == 1 ? EsriFieldType.ESRI_FIELD_TYPE_INTEGER
+						: EsriFieldType.ESRI_FIELD_TYPE_SMALL_INTEGER);
 				f.setLength((int) read(1));
 				flag = (int) read(1);
 				int ldf = (int) read(1);
@@ -152,6 +164,26 @@ public class FGDBTable extends FGDBBaseObject {
 
 				break;
 
+			case 2:
+			case 3:
+				// 2 = float32, 3 = float64
+				f.setType(fieldType == 2 ? EsriFieldType.ESRI_FIELD_TYPE_DOUBLE
+						: EsriFieldType.ESRI_FIELD_TYPE_SINGLE);
+				f.setLength((int) read(1));
+				flag = (int) read(1);
+				
+				ldf = (int) read(1);
+
+				if (ldf > 0) {
+					byte[] buffer = new byte[ldf];
+					if (raf.read(buffer, 0, buffer.length) != buffer.length) {
+						throw new Exception("eof reach");
+					}
+				}
+				f.setIsNullable((flag & 1) != 0);
+				fields.add(f);
+				break;
+				
 			// For field type = 4 (string),
 			//
 			// int32: maximum length of string
@@ -160,10 +192,12 @@ public class FGDBTable extends FGDBBaseObject {
 			// followed by ldf bytes with the default value numeric
 
 			case 4:
-				f.setType(EsriFieldType.ESRI_FIELD_TYPE_STRING);
+
+				f.setType(fieldType == 4 ? EsriFieldType.ESRI_FIELD_TYPE_STRING : EsriFieldType.ESRI_FIELD_TYPE_XML);
+
 				length = (int) read(4);
 				f.setLength(length);
-				//f.setIsNullable(value);
+				// f.setIsNullable(value);
 
 				flag = (int) read(1);
 				if ((flag & 0x4) != 0) {
@@ -171,14 +205,27 @@ public class FGDBTable extends FGDBBaseObject {
 					// System.out.println(defaultValue);
 				}
 
-				if ( ((flag & 0x01) != 0 )) {
+				if (((flag & 0x01) != 0)) {
 					f.setIsNullable(true);
 				}
-				
-				
+
 				fields.add(f);
 				break;
+			case 12:
 
+				f.setType(EsriFieldType.ESRI_FIELD_TYPE_XML);
+
+				length = (int) readVarUintGeom();
+				assert length == 0;
+
+				f.setLength(length);
+
+				flag = (int) read(1);
+
+				if (((flag & 0x01) != 0)) {
+					f.setIsNullable(true);
+				}
+				break;
 			// For field type = 6 (objectid),
 			// ubyte: unknown role = 4
 			// ubyte: unknown role = 2
@@ -187,6 +234,17 @@ public class FGDBTable extends FGDBBaseObject {
 				f.setType(EsriFieldType.ESRI_FIELD_TYPE_OID);
 				read(2);
 				fields.add(f);
+				break;
+
+			case 8: // binary
+				f.setType(EsriFieldType.ESRI_FIELD_TYPE_BLOB);
+
+				read(1); // unknown
+				flag = (int) read(1);
+
+				if (((flag & 0x01) != 0)) {
+					f.setIsNullable(true);
+				}
 				break;
 
 			case 7:
@@ -284,14 +342,19 @@ public class FGDBTable extends FGDBBaseObject {
 
 				}
 
+				EnvelopeN layerExtent = new EnvelopeN();
+
 				// float64: xmin of layer extent (might be NaN)
-				read(8);
+				layerExtent.setXMin(readDouble());
+
 				// float64: ymin of layer extent (might be NaN)
-				read(8);
+				layerExtent.setYMin(readDouble());
+
 				// float64: xmax of layer extent (might be NaN)
-				read(8);
+				layerExtent.setXMax(readDouble());
+
 				// float64: ymax of layer extent (might be NaN)
-				read(8);
+				layerExtent.setYMax(readDouble());
 
 				fields.add(f);
 
@@ -314,9 +377,24 @@ public class FGDBTable extends FGDBBaseObject {
 				}
 
 				break;
+
+			case 10: // UUID
+			case 11:
+				f.setType(
+						fieldType == 10 ? EsriFieldType.ESRI_FIELD_TYPE_GUID : EsriFieldType.ESRI_FIELD_TYPE_GLOBAL_ID);
+				read(1); // length
+				flag = (int) read(1);
+				if (((flag & 0x01) != 0)) {
+					f.setIsNullable(true);
+				}
+
+				fields.add(f);
+				break;
 			default:
 				throw new Exception("unsupported field type :" + fieldType);
 			}
+
+			// System.out.println("     type: " + f.getType());
 
 		}
 
@@ -367,11 +445,32 @@ public class FGDBTable extends FGDBBaseObject {
 	}
 
 	/**
+	 * get the field list
+	 * 
+	 * @return
+	 */
+	public Collection<Field> getFields() {
+		return Collections.unmodifiableCollection(fields);
+	}
+
+	/**
+	 * read row
+	 * 
+	 * @param rownum
+	 * @return
+	 * @throws Exception
+	 */
+	public Object[] readRow(int rownum) throws Exception {
+		long offset = index.getRecordOffset(index.getCorrectedRow(rownum));
+		return readRow(offset, rownum);
+	}
+
+	/**
 	 * 
 	 * @param offset
 	 * @throws Exception
 	 */
-	public Object[] readRow(long offset, int objectid) throws Exception {
+	protected Object[] readRow(long offset, int rownum) throws Exception {
 
 		raf.seek(offset);
 
@@ -392,9 +491,9 @@ public class FGDBTable extends FGDBBaseObject {
 		for (Field f : fields) {
 
 			if (f.isIsNullable()) {
-				nullableIndex ++;
+				nullableIndex++;
 			}
-			
+
 			// null ?
 			if (f.getType() != EsriFieldType.ESRI_FIELD_TYPE_OID) {
 
@@ -405,10 +504,12 @@ public class FGDBTable extends FGDBBaseObject {
 				}
 			}
 
+			// System.out.println("read field :" + f.getName() + " (" + f.getType() + ")");
+			
 			switch (f.getType()) {
 
 			case ESRI_FIELD_TYPE_OID:
-				result[index] = objectid;
+				result[index] = rownum + 1;
 				break;
 
 			case ESRI_FIELD_TYPE_GEOMETRY:
@@ -421,6 +522,18 @@ public class FGDBTable extends FGDBBaseObject {
 				result[index] = geom;
 				break;
 
+			case ESRI_FIELD_TYPE_GUID:
+			case ESRI_FIELD_TYPE_GLOBAL_ID:
+
+				byte[] b = new byte[16];
+				if (raf.read(b, 0, 16) != 16) {
+					throw new Exception("eof reached");
+				}
+
+				result[index] = String.format("{%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X}",
+						b[3], b[2], b[1], b[0], b[5], b[4], b[7], b[6], b[8], b[9], b[10], b[11], b[12], b[13], b[14],
+						b[15]);
+				break;
 			case ESRI_FIELD_TYPE_STRING:
 			case ESRI_FIELD_TYPE_XML:
 
@@ -428,10 +541,31 @@ public class FGDBTable extends FGDBBaseObject {
 				break;
 
 			case ESRI_FIELD_TYPE_INTEGER:
+			case ESRI_FIELD_TYPE_SMALL_INTEGER:
 
 				long l = read(f.getLength());
 				result[index] = l; // TODO proper type, not only long
 
+				break;
+
+			case ESRI_FIELD_TYPE_SINGLE:
+				double fl = readFloat();
+				result[index] = fl;
+				break;			
+			
+			case ESRI_FIELD_TYPE_DOUBLE:
+				double d = readDouble();
+				result[index] = d;
+				break;
+				
+			case ESRI_FIELD_TYPE_BLOB:
+				int binarysize = (int) readVarUintGeom();
+				byte[] content = new byte[binarysize];
+				if (raf.read(content, 0, binarysize) != binarysize) {
+					throw new Exception("eof reach");
+				}
+
+				result[index] = content;
 				break;
 
 			default:

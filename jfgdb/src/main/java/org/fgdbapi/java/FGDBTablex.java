@@ -2,7 +2,7 @@ package org.fgdbapi.java;
 
 import java.io.File;
 
-public class FGDBTablex extends FGDBBaseObject {
+class FGDBTablex extends FGDBBaseObject {
 
 	public FGDBTablex(File file) throws Exception {
 		super(file);
