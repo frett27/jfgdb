@@ -1,7 +1,10 @@
 package org.fgdbapi.java;
 
 import java.io.File;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.fgdbapi.thindriver.swig.SpatialReference;
 import org.fgdbapi.thindriver.xml.EsriFieldType;
@@ -16,9 +19,18 @@ public class FGDBTable extends FGDBBaseObject {
 		super(file);
 	}
 
-	long rowNumber;
+	int rowNumber;
+
 	long fieldsOffset;
 
+	long offsetRecords;
+
+	int numberOfNullableFields;
+
+	public int getRowNumber() {
+		return rowNumber;
+	}
+	
 	@Override
 	protected void readHeader() throws Exception {
 
@@ -29,36 +41,41 @@ public class FGDBTable extends FGDBBaseObject {
 		read(4);
 
 		// int32: number of (valid) rows
-		rowNumber = read(4);
+		rowNumber = (int)read(4);
+
 		// 4 bytes: varying values - unknown role (TBC : this value does have
 		// something to do with row size. A value larger than the size of the
 		// largest row seems to be ok)
-
 		read(4);
+
 		// 4 bytes: 0x05 0x00 0x00 0x00 - unknown role. Constant among the files
-
 		read(4);
+
 		// 4 bytes: varying values - unknown role. Seems to be 0x00 0x00 0x00
 		// 0x00 for FGDB 10 files, but not for earlier versions
-
 		read(4);
+
 		// 4 bytes: 0x00 0x00 0x00 0x00 - unknown role. Constant among the files
-
 		read(4);
+
 		// int32: file size in bytes
+		long filesize = read(4);
 
-		read(4);
 		// 4 bytes: 0x00 0x00 0x00 0x00 - unknown role. Constant among the files
+		long zeros = read(4);
+		assert zeros == 0;
 
-		read(4);
 		// int32: offset in bytes at which the field description section begins
 		// (often 40 in FGDB 10)
-
 		fieldsOffset = read(4);
+
 		// 4 bytes: 0x00 0x00 0x00 0x00 - unknown role. Constant among the files
-		read(4);
+		zeros = read(4);
+		assert zeros == 0;
 
 		readFields();
+
+		readOffsetRecords();
 	}
 
 	ArrayList<Field> fields;
@@ -123,10 +140,10 @@ public class FGDBTable extends FGDBBaseObject {
 				f.setLength((int) read(1));
 				flag = (int) read(1);
 				int ldf = (int) read(1);
-				
+
 				if (ldf > 0) {
 					byte[] buffer = new byte[ldf];
-					if (raf.read(buffer,0,buffer.length) != buffer.length) {
+					if (raf.read(buffer, 0, buffer.length) != buffer.length) {
 						throw new Exception("eof reach");
 					}
 				}
@@ -146,12 +163,18 @@ public class FGDBTable extends FGDBBaseObject {
 				f.setType(EsriFieldType.ESRI_FIELD_TYPE_STRING);
 				length = (int) read(4);
 				f.setLength(length);
-				
-				flag = (int)read(1);
+				//f.setIsNullable(value);
+
+				flag = (int) read(1);
 				if ((flag & 0x4) != 0) {
 					String defaultValue = readStringWithSizeHeader();
 					// System.out.println(defaultValue);
 				}
+
+				if ( ((flag & 0x01) != 0 )) {
+					f.setIsNullable(true);
+				}
+				
 				
 				fields.add(f);
 				break;
@@ -297,6 +320,129 @@ public class FGDBTable extends FGDBBaseObject {
 
 		}
 
+		// once fields are read,
+		// count the number of nullable records
+
+		for (Field f : fields) {
+			if (f.isIsNullable())
+				numberOfNullableFields += 1;
+		}
+
+	}
+
+	private void readOffsetRecords() throws Exception {
+
+		// The rows section does not necessarily immediately follow the last
+		// field description. It starts generally a few bytes after, but not in
+		// a predictable way. Note : for FGDB layers created by the ESRI FGDB
+		// SDK API, there are 4 bytes between the end of the field description
+		// section and the beginning of the rows section : 0xDE 0xAD 0xBE 0xEF
+		// (!)
+
+		raf.seek(40); // after header size
+
+		while (true) {
+
+			byte[] buffer = new byte[4];
+			long current = raf.getFilePointer();
+
+			if (raf.read(buffer, 0, 4) != 4) {
+				throw new Exception("eof reach");
+			}
+			// System.out.println(Arrays.asList(buffer));
+			if (buffer[0] == (byte) 0xDE /* -22 */ && buffer[1] == (byte) 0xAD /* -53 */
+					&& buffer[2] == (byte) 0xBE /* 42 */
+					&& buffer[3] == (byte) 0xEF /* -11 */ ) {
+				offsetRecords = raf.getFilePointer();
+				break;
+			} else {
+				raf.seek(current);
+				read(1);
+			}
+
+		}
+
+		System.out.println("record section found");
+
+	}
+
+	/**
+	 * 
+	 * @param offset
+	 * @throws Exception
+	 */
+	public Object[] readRow(long offset, int objectid) throws Exception {
+
+		raf.seek(offset);
+
+		long length = read(4);
+		int nb = (int) Math.ceil(numberOfNullableFields * 1.0 / 8);
+		byte[] nullRecords = new byte[nb + (8 - nb)];
+
+		if (raf.read(nullRecords, 0, nb) != nb) {
+			throw new Exception("eof reach");
+		}
+
+		long nulls = ByteBuffer.wrap(nullRecords).order(ByteOrder.LITTLE_ENDIAN).getLong();
+
+		Object[] result = new Object[fields.size()];
+
+		int index = 0;
+		int nullableIndex = -1;
+		for (Field f : fields) {
+
+			if (f.isIsNullable()) {
+				nullableIndex ++;
+			}
+			
+			// null ?
+			if (f.getType() != EsriFieldType.ESRI_FIELD_TYPE_OID) {
+
+				if ((nulls & (1 << nullableIndex)) != 0) {
+					// field is null, don't read value
+					index++;
+					continue;
+				}
+			}
+
+			switch (f.getType()) {
+
+			case ESRI_FIELD_TYPE_OID:
+				result[index] = objectid;
+				break;
+
+			case ESRI_FIELD_TYPE_GEOMETRY:
+				int geomlength = (int) readVarUintGeom();
+				byte[] geom = new byte[geomlength];
+				if (raf.read(geom, 0, geomlength) != geomlength) {
+					throw new Exception("eof reach");
+				}
+
+				result[index] = geom;
+				break;
+
+			case ESRI_FIELD_TYPE_STRING:
+			case ESRI_FIELD_TYPE_XML:
+
+				result[index] = readVarUIntString();
+				break;
+
+			case ESRI_FIELD_TYPE_INTEGER:
+
+				long l = read(f.getLength());
+				result[index] = l; // TODO proper type, not only long
+
+				break;
+
+			default:
+				throw new Exception("unsupported field type");
+			}
+
+			index++;
+
+		}
+
+		return result;
 	}
 
 }

@@ -13,7 +13,10 @@ public class FGDBTablex extends FGDBBaseObject {
 
 	long number_of_rows;
 
-	long size_offset; // nb of bytes
+	/**
+	 * nb of bytes for offset
+	 */
+	int size_offset; // nb of bytes
 
 	long array_start;
 
@@ -36,7 +39,7 @@ public class FGDBTablex extends FGDBBaseObject {
 		// int32: size_offset = number of bytes to encode each feature offset.
 		// Must be 4 (.gdbtable up to 4GB), 5 (.gdbtable up to 1TB) or 6
 		// (.gdbtable up to 256TB)
-		size_offset = read(4);
+		size_offset = (int) read(4);
 
 		//
 		array_start = raf.getFilePointer();
@@ -49,9 +52,9 @@ public class FGDBTablex extends FGDBBaseObject {
 		// (rounded to the next multiple of 32)
 
 		long nBitmapInt32Words = read(4);
-		if (nBitmapInt32Words % 32 > 0) {
-			nBitmapInt32Words = ((nBitmapInt32Words >> 5) + 1) << 5;
-		}
+		// if (nBitmapInt32Words % 32 > 0) {
+		// nBitmapInt32Words = ((nBitmapInt32Words >> 5) + 1) << 5;
+		// }
 
 		// int32: n1024BlocksTotal = (number_of_rows + 1023) / 1024. In the case
 		// where there's a bitmap, this is also nBitsForBlockMap = number of
@@ -76,21 +79,37 @@ public class FGDBTablex extends FGDBBaseObject {
 		// nUsefulBitmapIn32Words = 0
 		//
 
-		// Otherwise, following those 16 trailer bytes, there is a bit array of
-		// at least (n1024BlocksTotal + 7) / 8 bytes (in practice its size is
-		// rounded to the next muliple of 32 int32 words). Each bit in the array
-		// represents the presence of a block of offsets for 1024 features (bit
-		// = 1), or its absence (bit = 0). The total number of bits set to 1
-		// must be equal to n1024Blocks
-		//
+		if (nBitmapInt32Words == 0) {
+			 assert n1024BlocksTotal == n1024BlocksPresentBis;
+			 	assert n1024BlocksTotal == n1024BlocksPresent;
+			 	assert nUsefulBitmapIn32Words == 0;
+		} else
+		if (nBitmapInt32Words != 0) {
 
-		int l = ((int) n1024BlocksTotal + 7) / 8;
-		pabyTablXBlockMap = new byte[l];
-		for (int i = 0; i < l; i++) {
-			pabyTablXBlockMap[i] = (byte) 0xFF;
+			// Otherwise, following those 16 trailer bytes, there is a bit array
+			// of
+			// at least (n1024BlocksTotal + 7) / 8 bytes (in practice its size
+			// is
+			// rounded to the next muliple of 32 int32 words). Each bit in the
+			// array
+			// represents the presence of a block of offsets for 1024 features
+			// (bit
+			// = 1), or its absence (bit = 0). The total number of bits set to 1
+			// must be equal to n1024Blocks
+			//
+
+			int l = ((int) n1024BlocksTotal + 7) / 8;
+			pabyTablXBlockMap = new byte[l];
+			for (int i = 0; i < l; i++) {
+				pabyTablXBlockMap[i] = (byte) 0xFF;
+			}
+
+			int r = raf.read(pabyTablXBlockMap, 0, l);
+			if (r != l) {
+				throw new Exception("eof reached");
+			}
+
 		}
-
-		int r = raf.read(pabyTablXBlockMap, 0, l);
 
 	}
 
@@ -100,23 +119,32 @@ public class FGDBTablex extends FGDBBaseObject {
 	 * @return
 	 * @throws Exception
 	 */
-	public long getCorrectedRow(int irow) throws Exception {
+	public int getCorrectedRow(int irow) throws Exception {
 
+		if (pabyTablXBlockMap == null)
+			return irow;
+		
 		long nCountBlocksBefore = 0;
 		int iBlock = irow / 1024;
-		
+
 		// Check if the block is not empty
 		if ((pabyTablXBlockMap[iBlock / 8] & (1 << (iBlock % 8))) == 0) {
 			return -1;
 		}
-		
+
 		for (int i = 0; i < iBlock; i++) {
 			boolean present = (pabyTablXBlockMap[i / 8] & (1 << (i % 8))) != 0;
 			nCountBlocksBefore += (present ? 1 : 0);
 		}
-		
-		return nCountBlocksBefore * 1024 + (irow % 1024);
-		
+
+		return (int) (nCountBlocksBefore * 1024 + (irow % 1024));
+
+	}
+
+	public long getRecordOffset(int iCorrectedRow) throws Exception {
+		raf.seek(array_start + iCorrectedRow * size_offset);
+		long offset = read(size_offset);
+		return offset;
 	}
 
 }
