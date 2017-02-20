@@ -21,7 +21,8 @@ public class FGDBBaseObject {
 
 	protected float readFloat() throws Exception {
 		long l = read(4);
-		return Float.intBitsToFloat((int)l);
+		float f = Float.intBitsToFloat((int)l);
+		return f;
 	}
 	
 	

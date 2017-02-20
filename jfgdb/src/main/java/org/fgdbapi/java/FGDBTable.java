@@ -167,11 +167,10 @@ public class FGDBTable extends FGDBBaseObject {
 			case 2:
 			case 3:
 				// 2 = float32, 3 = float64
-				f.setType(fieldType == 2 ? EsriFieldType.ESRI_FIELD_TYPE_DOUBLE
-						: EsriFieldType.ESRI_FIELD_TYPE_SINGLE);
+				f.setType(fieldType == 2 ? EsriFieldType.ESRI_FIELD_TYPE_DOUBLE : EsriFieldType.ESRI_FIELD_TYPE_SINGLE);
 				f.setLength((int) read(1));
 				flag = (int) read(1);
-				
+
 				ldf = (int) read(1);
 
 				if (ldf > 0) {
@@ -183,7 +182,7 @@ public class FGDBTable extends FGDBBaseObject {
 				f.setIsNullable((flag & 1) != 0);
 				fields.add(f);
 				break;
-				
+
 			// For field type = 4 (string),
 			//
 			// int32: maximum length of string
@@ -394,7 +393,7 @@ public class FGDBTable extends FGDBBaseObject {
 				throw new Exception("unsupported field type :" + fieldType);
 			}
 
-			// System.out.println("     type: " + f.getType());
+			// System.out.println(" type: " + f.getType());
 
 		}
 
@@ -419,29 +418,44 @@ public class FGDBTable extends FGDBBaseObject {
 
 		raf.seek(40); // after header size
 
+		raf.seek(40 + 10);
+
+		raf.seek(40 + 10);
+
+		int cptleft = 30;
 		while (true) {
+
+			if (cptleft-- < 0)
+				throw new Exception("not found the record offset");
 
 			byte[] buffer = new byte[4];
 			long current = raf.getFilePointer();
 
 			if (raf.read(buffer, 0, 4) != 4) {
-				throw new Exception("eof reach");
+				throw new Exception("eof reach (" + current + ")");
 			}
 			// System.out.println(Arrays.asList(buffer));
-			if (buffer[0] == (byte) 0xDE /* -22 */ && buffer[1] == (byte) 0xAD /* -53 */
-					&& buffer[2] == (byte) 0xBE /* 42 */
-					&& buffer[3] == (byte) 0xEF /* -11 */ ) {
-				offsetRecords = raf.getFilePointer();
+			if (buffer[0] == (byte) 0xDE && buffer[1] == (byte) 0xAD && buffer[2] == (byte) 0xBE
+					&& buffer[3] == (byte) 0xEF) {
+				// ok
+
 				break;
 			} else {
-				raf.seek(current);
-				read(1);
+
+				offsetRecords = raf.getFilePointer();
+				break;
+				/*
+				 * System.out.println(String.format("%2x %2x %2x %2x",
+				 * buffer[0],buffer[1],buffer[2],buffer[3]));
+				 * 
+				 * raf.seek(current); read(1);
+				 */
 			}
 
 		}
 
-		System.out.println("record section found");
-
+		System.out.println("record section found :" + offsetRecords);
+		System.out.println("");
 	}
 
 	/**
@@ -505,7 +519,7 @@ public class FGDBTable extends FGDBBaseObject {
 			}
 
 			// System.out.println("read field :" + f.getName() + " (" + f.getType() + ")");
-			
+
 			switch (f.getType()) {
 
 			case ESRI_FIELD_TYPE_OID:
@@ -549,15 +563,18 @@ public class FGDBTable extends FGDBBaseObject {
 				break;
 
 			case ESRI_FIELD_TYPE_SINGLE:
-				double fl = readFloat();
-				result[index] = fl;
-				break;			
-			
 			case ESRI_FIELD_TYPE_DOUBLE:
-				double d = readDouble();
-				result[index] = d;
+
+				if (f.getLength() == 4) {
+					result[index] = readFloat();
+				} else if (f.getLength() == 8) {
+					result[index] = readDouble();
+				} else {
+					throw new Exception("unsupported decimal field length :" + f.getLength());
+				}
+
 				break;
-				
+
 			case ESRI_FIELD_TYPE_BLOB:
 				int binarysize = (int) readVarUintGeom();
 				byte[] content = new byte[binarysize];
@@ -571,6 +588,8 @@ public class FGDBTable extends FGDBBaseObject {
 			default:
 				throw new Exception("unsupported field type");
 			}
+
+			// System.out.println(result[index]);
 
 			index++;
 
