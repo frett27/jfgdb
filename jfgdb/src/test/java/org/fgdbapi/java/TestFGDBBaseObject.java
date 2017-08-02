@@ -55,8 +55,10 @@ public class TestFGDBBaseObject {
 
 	@Test
 	public void test4() throws Exception {
-		for (int j = 1; j < 11; j++) {
-			File fileTable = new File("C:\\Temp\\DataService.gdb\\a0000000" + j + ".gdbtable");
+		
+		for (int j = 1; j < 10; j++) {
+			File fileTable = new File("C:\\temp\\streets.gdb\\a0000000" + j + ".gdbtable");
+
 			if (!fileTable.exists())
 				continue;
 			System.out.println("handling :" + fileTable);
