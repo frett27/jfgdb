@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
 import org.fgdbapi.thindriver.TableHelper;
 import org.fgdbapi.thindriver.swig.FGDBJNIWrapper;
 import org.fgdbapi.thindriver.swig.Geodatabase;
 import org.fgdbapi.thindriver.swig.Row;
 import org.fgdbapi.thindriver.swig.Table;
 import org.fgdbapi.thindriver.xml.EsriGeometryType;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,6 +35,7 @@ public class TestTables {
     System.out.println("database :" + gdbfile);
   }
 
+  @After
   public void tearDown() throws Exception {
     gdbfile.delete();
   }

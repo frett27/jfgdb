@@ -627,17 +627,25 @@ void handleException(JNIEnv *jenv, const std::runtime_error e) {
     return result;
   }
 }
-
 %ignore FileGDBAPI::SpatialReference::GetSpatialReferenceID;
 %ignore FileGDBAPI::SpatialReference::GetSpatialReferenceText;
-%ignore FileGDBAPI::SpatialReference::GetFalseOriginAndUnits;
-%ignore FileGDBAPI::SpatialReference::GetMFalseOriginAndUnits;
+%ignore FileGDBAPI::SpatialReference::GetXYFalseOriginAndUnits;
+//%ignore FileGDBAPI::SpatialReference::GetMFalseOriginAndUnits;
 %ignore FileGDBAPI::SpatialReference::GetMTolerance;
 %ignore FileGDBAPI::SpatialReference::GetXYTolerance;
-%ignore FileGDBAPI::SpatialReference::GetZFalseOriginAndUnits;
+//%ignore FileGDBAPI::SpatialReference::GetZFalseOriginAndUnits;
 %ignore FileGDBAPI::SpatialReference::GetZTolerance;
 
-/*
+%ignore FileGDBAPI::SpatialReference::GetXYFalseOrigin;
+%ignore FileGDBAPI::SpatialReference::GetZFalseOrigin;
+%ignore FileGDBAPI::SpatialReference::GetMFalseOrigin;
+
+%ignore FileGDBAPI::SpatialReference::GetMResolution;
+%ignore FileGDBAPI::SpatialReference::GetXResolution;
+%ignore FileGDBAPI::SpatialReference::GetXYResolution;
+%ignore FileGDBAPI::SpatialReference::GetYResolution;
+%ignore FileGDBAPI::SpatialReference::GetZResolution;
+
 %extend FileGDBAPI::SpatialReference {
   int getId() {
     int result;
@@ -652,35 +660,20 @@ void handleException(JNIEnv *jenv, const std::runtime_error e) {
   double getXFalseOrigin() {
     double falseX;
     double falseY;
-    double xyUnits;
-    checkResult(self->GetFalseOriginAndUnits(falseX, falseY, xyUnits));
+    checkResult(self->GetXYFalseOrigin(falseX, falseY));
     return falseX;
   }
   double getYFalseOrigin() {
     double falseX;
     double falseY;
-    double xyUnits;
-    checkResult(self->GetFalseOriginAndUnits(falseX, falseY, xyUnits));
+    checkResult(self->GetXYFalseOrigin(falseX, falseY));
     return falseY;
-  }
-  double getXYUnits() {
-    double falseX;
-    double falseY;
-    double xyUnits;
-    checkResult(self->GetFalseOriginAndUnits(falseX, falseY, xyUnits));
-    return xyUnits;
   }
   double getMFalseOrigin() {
     double falseM;
     double mUnits;
-    checkResult(self->GetMFalseOriginAndUnits(falseM, mUnits));
+    checkResult(self->GetMFalseOrigin(falseM));
     return falseM;
-  }
-  double getMUnits() {
-    double falseM;
-    double mUnits;
-    checkResult(self->GetMFalseOriginAndUnits(falseM, mUnits));
-    return mUnits;
   }
   double getMTolerance() {
     double result;
@@ -692,26 +685,29 @@ void handleException(JNIEnv *jenv, const std::runtime_error e) {
     checkResult(self->GetXYTolerance(result));
     return result;
   }
-  double getXFalseOrigin() {
-    double falseZ;
-    double zUnits;
-    checkResult(self->GetMFalseOriginAndUnits(falseZ, zUnits));
-    return falseZ;
-  }
-  double getXUnits() {
-    double falseZ;
-    double zUnits;
-    checkResult(self->GetMFalseOriginAndUnits(falseZ, zUnits));
-    return zUnits;
-  }
   double getZTolerance() {
     double result;
     checkResult(self->GetZTolerance(result));
     return result;
   }
+  double getMResolution() {
+    double result;
+    checkResult(self->GetMResolution(result));
+    return result;
+  }
+  double getZResolution() {
+    double result;
+    checkResult(self->GetZResolution(result));
+    return result;
+  }
+  double getXYResolution() {
+    double result;
+    checkResult(self->GetXYResolution(result));
+    return result;
+  }
+
 }
 
-*/
 %ignore FileGDBAPI::IndexDef::GetIsUnique;
 %ignore FileGDBAPI::IndexDef::GetName;
 %ignore FileGDBAPI::IndexDef::GetFields;
