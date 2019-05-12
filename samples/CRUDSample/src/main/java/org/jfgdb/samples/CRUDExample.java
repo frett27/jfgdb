@@ -4,18 +4,32 @@ import java.io.File;
 
 import org.fgdbapi.thindriver.SharedLibrariesInitializer;
 import org.fgdbapi.thindriver.TableHelper;
+import org.fgdbapi.thindriver.swig.EnumRows;
 import org.fgdbapi.thindriver.swig.FGDBJNIWrapper;
 import org.fgdbapi.thindriver.swig.Geodatabase;
 import org.fgdbapi.thindriver.swig.Row;
 import org.fgdbapi.thindriver.swig.Table;
 import org.fgdbapi.thindriver.xml.EsriGeometryType;
 
+import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.GeometryEngine;
 import com.esri.core.geometry.Point;
 
+/**
+ * FGDB sample CRUD
+ * 
+ * @param args
+ * @throws Exception
+ */
 public class CRUDExample {
 
-	public static void createGeodataBaseAndTable() throws Exception {
+	/**
+	 * create a new fgdb, and create a foo featureclass
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public static File createGeodataBaseAndTable() throws Exception {
 		SharedLibrariesInitializer.initLibraries();
 
 		System.out.println("java.library.path :" + System.getProperty("java.library.path"));
@@ -65,10 +79,35 @@ public class CRUDExample {
 		}
 		System.out.println("Done");
 
+		return f;
+
+	}
+
+	public static void openAndDumpGeometriesOnFoo(File fgdb) throws Exception {
+		System.out.println("Opening " + fgdb);
+		Geodatabase g = FGDBJNIWrapper.openGeodatabase(fgdb.getAbsolutePath());
+		Table foo = g.openTable("foo");
+		EnumRows s = foo.search("*", "", true);
+		Row r = s.next();
+		if (r != null) {
+			do {
+				
+				byte[] shapeGeometry = r.getGeometry();
+				Point geom = (Point)GeometryEngine.geometryFromEsriShape(shapeGeometry, Geometry.Type.Point);
+				System.out.println(geom.getX() + " , " + geom.getY());
+				
+				
+				r = s.next();
+			} while (r != null);
+
+		}
+		System.out.println("Done");
+
 	}
 
 	public static void main(String[] args) throws Exception {
-		createGeodataBaseAndTable();
+		File fgdb = createGeodataBaseAndTable();
+		openAndDumpGeometriesOnFoo(fgdb);
 	}
 
 }
