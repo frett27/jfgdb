@@ -1,14 +1,18 @@
-#jfgdb - Java File Geodatabase thin driver
+# jfgdb - Java File Geodatabase thin driver
 
 FileGeodatabase (GDB) is a very efficient file format for storing GIS Data.
 
-This package provide a java library to use the ESRI FileGeodatabaseAPI (1.4). Bringing fast READ / WRITE of simple featureclasses for Java environment.
+This package provide a java library wrapper and ESRI FileGeodatabaseAPI (1.4) embedding to a simple use on java. 
+
+This project bring a fast READ / WRITE of simple featureclasses for Java environment.
 
 
 
-More informations on the FileGeodatabase API can be found here : [http://www.esri.com/software/arcgis/geodatabase/interoperability](http://www.esri.com/software/arcgis/geodatabase/interoperability)
+More informations on the FileGeodatabase API, supported plateform, can be found 
 
-Using this library, you MUST agree to the FileGeodatabase License conditions : see []()
+[https://github.com/Esri/file-geodatabase-api](https://github.com/Esri/file-geodatabase-api)
+
+Using this library, you MUST agree to the ESRI (inc),  FileGeodatabase License conditions : 
 
 Additional FileGeodatabase API usage conditions are explained here : https://blogs.esri.com/esri/arcgis/2010/12/13/file-geodatabase-api-details/
 
